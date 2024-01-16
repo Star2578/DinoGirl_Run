@@ -262,12 +262,12 @@ public class MainGame {
                     }
 
                     // Handle Score
-                    score++;
-                    String formattedScore = String.format("%05d", score); // Leading zeros for 7 digits
+                    score = 1;
+                    String formattedScore = String.format("%05d", obstacleManager.getCurrentScore()); // Leading zeros for 7 digits
                     scoreText.setText(formattedScore);
                     obstacleManager.updateSpeed(score); // Update the score for speed multiplier
 
-                    if (score == 99999) {
+                    if (obstacleManager.getCurrentScore() == 99999) {
                         // Win!
                         youAreTheWinner(primaryStage);
                     }

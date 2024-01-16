@@ -23,8 +23,8 @@ public class ObstacleManager {
     private double obstacleSpeed = 3.0; // Initial obstacle speed
     private final int[] thresholds = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
     private final double[] speedMultipliers = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
-    private final String[] obstacleNames = {"TNT", "Cactus"};
-    private final String[] obstacleTextures = {"Sprites/TNT.png", "Sprites/Cactus.png"};
+    private final String[] obstacleNames = {"TNT", "Cactus", "Bone", "Steak"};
+    private final String[] obstacleTextures = {"Sprites/TNT.png", "Sprites/Cactus.png", "Sprites/Bone.png", "Sprites/steak.png"};
     private Obstacle newObstacle;
     private int currentRandomNumber;
     private int currentLevel = 0; // Track the current level
@@ -50,16 +50,30 @@ public class ObstacleManager {
                 defaultSpawnY = 150;
 
                 if (Objects.equals(name, "TNT")) {
-                    // TODO: TNT Behavior
                     widthSize = 50;
                     heightSize = 50;
+                    newObstacle.setType("Damage");
                 }
 
                 if (Objects.equals(name, "Cactus")) {
-                    // TODO: Cactus Behavior
                     widthSize = 50;
                     heightSize = 100;
                     defaultSpawnY -= (heightSize/3);
+                    newObstacle.setType("Damage");
+                }
+
+                if (Objects.equals(name, "Bone")) {
+                    widthSize = 100;
+                    heightSize = 50;
+                    defaultSpawnY = 50;
+                    newObstacle.setType("Damage");
+                }
+
+                if (Objects.equals(name, "Steak")) {
+                    widthSize = 50;
+                    heightSize = 50;
+                    newObstacle.setType("Score");
+                    newObstacle.setAdditionalScore(100);
                 }
                 newObstacle.getTextTure().setFitWidth(widthSize);
                 newObstacle.getTextTure().setFitHeight(heightSize);
@@ -90,12 +104,24 @@ public class ObstacleManager {
 
                     // Check for collision with the Dino girl
                     if (obstacleTexture.getBoundsInParent().intersects(collider.getBoundsInParent())) {
-                        // Handle collision (e.g., game over logic)
-                        // System.out.println("Collision!");
+                        String type = obstacle.getType();
 
-                        // Handle Game Over
-                        timeline.stop(); // Stop the Game
-                        displayGameOver(obstacleTexture);
+                        if (Objects.equals(type, "Score")) {
+                            currentScore += obstacle.getAdditionalScore();
+
+                            displayScoreMessage(obstacle.getAdditionalScore(), obstacleTexture.getTranslateX(), obstacleTexture.getTranslateY());
+                            timeline.stop();
+
+                            // Destroy obj and start new obj timeline
+                            root.getChildren().remove(obstacleTexture);
+                            startObstacleAnimation(createObstacle());
+                        }
+
+                        if (Objects.equals(type, "Damage")) {
+                            // Handle Game Over
+                            timeline.stop(); // Stop the Game
+                            displayGameOver(obstacleTexture);
+                        }
                     }
 
                     // Remove obstacle when off-screen
@@ -114,10 +140,10 @@ public class ObstacleManager {
 
     // Method to update the speed based on the score
     public void updateSpeed(int score) {
-        currentScore = score;
+        currentScore += score;
 
         int nextLevel = currentLevel + 1;
-        if (nextLevel < thresholds.length && score >= thresholds[nextLevel]) {
+        if (nextLevel < thresholds.length && currentScore >= thresholds[nextLevel]) {
             currentLevel = nextLevel;
             obstacleSpeed = 3.0 * speedMultipliers[currentLevel];
         }
@@ -171,4 +197,27 @@ public class ObstacleManager {
             startObstacleAnimation(createObstacle());
         });
     }
+
+    // Display a score message for a brief moment
+    private void displayScoreMessage(int additionalScore, double posX, double posY) {
+        Text scoreMessage = new Text("+" + additionalScore);
+        scoreMessage.setStyle("-fx-font-size: 30; -fx-fill: #26ff00; -fx-font-weight: bold;");
+
+        // Add the score message to the root
+        root.getChildren().add(scoreMessage);
+
+        scoreMessage.setTranslateX(posX);
+        scoreMessage.setTranslateY(posY - 50);
+
+        // Create a timeline to fade out the score message after 1 second
+        Timeline scoreMessageTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), e -> {
+                    root.getChildren().remove(scoreMessage);
+                })
+        );
+        scoreMessageTimeline.play();
+    }
+
+    public void setCurrentScore(int currentScore) { this.currentScore = currentScore; }
+    public int getCurrentScore() { return currentScore; }
 }
