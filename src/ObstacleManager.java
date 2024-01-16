@@ -95,7 +95,7 @@ public class ObstacleManager {
 
                         // Handle Game Over
                         timeline.stop(); // Stop the Game
-                        displayGameOver();
+                        displayGameOver(obstacleTexture);
                     }
 
                     // Remove obstacle when off-screen
@@ -131,7 +131,7 @@ public class ObstacleManager {
         }
     }
 
-    public void displayGameOver() {
+    public void displayGameOver(ImageView deleteMe) {
         Text gameOverText = new Text("Game Over!");
         gameOverText.setStyle("-fx-font-size: 80;");
 
@@ -161,7 +161,7 @@ public class ObstacleManager {
 
             // Stop the current obstacle animation
             timeline.stop();
-            root.getChildren().remove(this.obstacle); // Remove existing obstacles
+            root.getChildren().remove(deleteMe); // Remove existing obstacles
 
             // Restart the game loop
             startObstacleAnimation(createObstacle());
