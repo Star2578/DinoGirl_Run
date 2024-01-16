@@ -159,6 +159,10 @@ public class ObstacleManager {
             root.getChildren().remove(gameOverLayout);
             currentScore = 0;
 
+            // reset speed
+            obstacleSpeed = 3.0;
+            currentLevel = 0;
+
             // Stop the current obstacle animation
             timeline.stop();
             root.getChildren().remove(deleteMe); // Remove existing obstacles

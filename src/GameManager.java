@@ -76,7 +76,8 @@ public class GameManager {
         // Screen resolution adjustment (ComboBox)
         ComboBox<String> resolutionComboBox = new ComboBox<>();
         resolutionComboBox.getItems().addAll("1920x1080", "1280x720", "800x600"); // Populate with resolutions
-        resolutionComboBox.setValue("800x600"); // default value
+        String screen = screenWidth + "x" + screenHeight;
+        resolutionComboBox.setValue(screen); // default value
 
         resolutionComboBox.setOnAction(event -> {
             String selectedResolution = resolutionComboBox.getSelectionModel().getSelectedItem();
