@@ -141,7 +141,7 @@ public class MainGame {
 
         // Handle obstacles spawning
         ObstacleManager obstacleManager = new ObstacleManager(root, capsuleShape, gameManager.getScreenWidth(), gameManager.getScreenHeight());
-        obstacleManager.createObstacle();
+        obstacleManager.startObstacleAnimation(obstacleManager.createObstacle());
 
         // Pause Overlay
         Text pausedText = new Text("PAUSED");

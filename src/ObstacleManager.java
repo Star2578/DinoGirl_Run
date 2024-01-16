@@ -9,6 +9,9 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.scene.shape.Shape;
 
+import java.util.Objects;
+import java.util.Random;
+
 public class ObstacleManager {
     GameManager gameManager = GameManager.getInstance();
     private final StackPane root;
@@ -20,8 +23,15 @@ public class ObstacleManager {
     private double obstacleSpeed = 3.0; // Initial obstacle speed
     private final int[] thresholds = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
     private final double[] speedMultipliers = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
+    private final String[] obstacleNames = {"TNT", "Cactus"};
+    private final String[] obstacleTextures = {"Sprites/TNT.png", "Sprites/Cactus.png"};
+    private Obstacle newObstacle;
+    private int currentRandomNumber;
     private int currentLevel = 0; // Track the current level
     private int currentScore = 0;
+    private double widthSize;
+    private double heightSize;
+    private double defaultSpawnY;
 
     public ObstacleManager(StackPane root, Shape collider, int screenWidth, int screenHeight) {
         this.root = root;
@@ -30,28 +40,58 @@ public class ObstacleManager {
         this.screenHeight = screenHeight;
     }
 
-    public void createObstacle() {
-        obstacle = new ImageView("Sprites/TNT.png"); // Customize the obstacle dimensions
-        int size = 50;
-        obstacle.setFitWidth(size);
-        obstacle.setFitHeight(size);
-        obstacle.setPreserveRatio(true);
+    public Obstacle createObstacle() {
+        Random random = new Random();
+        currentRandomNumber = random.nextInt(0, obstacleNames.length);
+        newObstacle = new Obstacle(obstacleNames[currentRandomNumber], obstacleTextures[currentRandomNumber]) {
+            @Override
+            public void behavior() {
+                String name = obstacleNames[currentRandomNumber];
+                defaultSpawnY = 150;
 
-        root.getChildren().add(obstacle);
+                if (Objects.equals(name, "TNT")) {
+                    // TODO: TNT Behavior
+                    widthSize = 50;
+                    heightSize = 50;
+                }
+
+                if (Objects.equals(name, "Cactus")) {
+                    // TODO: Cactus Behavior
+                    widthSize = 50;
+                    heightSize = 100;
+                    defaultSpawnY -= (heightSize/3);
+                }
+                newObstacle.getTextTure().setFitWidth(widthSize);
+                newObstacle.getTextTure().setFitHeight(heightSize);
+                newObstacle.getTextTure().setPreserveRatio(true);
+
+                System.out.println("Spawned " + name);
+            }
+        };
+
+
+        return  newObstacle;
+    }
+
+    public void startObstacleAnimation(Obstacle obstacle) {
+        ImageView obstacleTexture = obstacle.getTextTure();
+        obstacle.behavior();
+
+        root.getChildren().add(obstacleTexture);
 
         // Set the initial position of the obstacle (e.g., off-screen)
-        obstacle.setTranslateX((double) gameManager.getScreenWidth() / 2);
-        obstacle.setTranslateY(150); // Adjust Y position as needed
+        obstacleTexture.setTranslateX((double) gameManager.getScreenWidth() / 2);
+        obstacleTexture.setTranslateY(defaultSpawnY); // Adjust Y position as needed
 
         // Define the obstacle movement animation
         timeline = new Timeline(
                 new KeyFrame(Duration.seconds(0.01), e -> {
-                    obstacle.setTranslateX(obstacle.getTranslateX() - obstacleSpeed); // Adjust speed as needed
+                    obstacleTexture.setTranslateX(obstacleTexture.getTranslateX() - obstacleSpeed); // Adjust speed as needed
 
                     // Check for collision with the Dino girl
-                    if (obstacle.getBoundsInParent().intersects(collider.getBoundsInParent())) {
+                    if (obstacleTexture.getBoundsInParent().intersects(collider.getBoundsInParent())) {
                         // Handle collision (e.g., game over logic)
-                        System.out.println("Collision!");
+                        // System.out.println("Collision!");
 
                         // Handle Game Over
                         timeline.stop(); // Stop the Game
@@ -59,11 +99,11 @@ public class ObstacleManager {
                     }
 
                     // Remove obstacle when off-screen
-                    if (obstacle.getTranslateX()  < ((double) screenWidth / -2)) {
-                        root.getChildren().remove(obstacle);
-                        System.out.println("Vanished!");
+                    if (obstacleTexture.getTranslateX()  < ((double) screenWidth / -2)) {
+                        root.getChildren().remove(obstacleTexture);
+                        // System.out.println("Vanished!");
                         timeline.stop();
-                        createObstacle();
+                        startObstacleAnimation(createObstacle());
                     }
                 })
         );
@@ -124,7 +164,7 @@ public class ObstacleManager {
             root.getChildren().remove(this.obstacle); // Remove existing obstacles
 
             // Restart the game loop
-            createObstacle();
+            startObstacleAnimation(createObstacle());
         });
     }
 }
