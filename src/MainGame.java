@@ -23,12 +23,12 @@ import javafx.util.Duration;
 public class MainGame {
     GameManager gameManager = GameManager.getInstance();
 
-    private final double gravity = 0.4;
-    private final double crouchGravity = gravity * 2;
+    private final double GRAVITY = 0.4;
+    private final double CROUCH_GRAVITY = GRAVITY * 2;
     private double yVelocity = 0;
     private boolean isJumping = false;
     private boolean isCrouching = false;
-    private final double jumpStrength = -15;
+    private final double JUMP_STRENGTH = -15;
     private AnimationTimer gameLoop;
     private double groundPos;
 
@@ -53,7 +53,7 @@ public class MainGame {
         int size = 50;
 
         for (int i = 0; i <= gameManager.getScreenWidth() / size; i++) {
-            ImageView grass = new ImageView("Sprites/Grass_Block.jpg");
+            ImageView grass = new ImageView("Sprites/Map/Grass_Block.jpg");
             grass.setFitHeight(size);
             grass.setFitWidth(size);
             grass.setPreserveRatio(true);
@@ -65,7 +65,7 @@ public class MainGame {
             dirtContainer.setSpacing(-1);
 
             for (int i = 0; i <= gameManager.getScreenWidth() / size; i++) {
-                ImageView dirt = new ImageView("Sprites/Dirt_Block.png");
+                ImageView dirt = new ImageView("Sprites/Map/Dirt_Block.png");
                 dirt.setFitWidth(size);
                 dirt.setFitHeight(size);
                 dirt.setPreserveRatio(true);
@@ -125,7 +125,7 @@ public class MainGame {
 
         // Teletubbies Sun
         StackPane topRight = new StackPane();
-        ImageView sun = new ImageView("Sprites/Funny_Sun.png");
+        ImageView sun = new ImageView("Sprites/Map/Funny_Sun.png");
         sun.setPreserveRatio(true);
         int sunSize = (30 * gameManager.getScreenHeight()) / 100;
         sun.setFitHeight(sunSize);
@@ -225,17 +225,17 @@ public class MainGame {
 
         // Game loop using AnimationTimer
         gameLoop = new AnimationTimer() {
-            private int score = 0;
-
             @Override
             public void handle(long now) {
                 // if not Game Over
+                int score = 0;
+
                 if (!gameManager.getGameOverStatus()) {
                     // Apply gravity
                     if (isCrouching) {
-                        yVelocity += crouchGravity; // Increase the fall speed when crouching
+                        yVelocity += CROUCH_GRAVITY; // Increase the fall speed when crouching
                     } else {
-                        yVelocity += gravity; // Default gravity
+                        yVelocity += GRAVITY; // Default gravity
                     }
 
                     // Update Dino girl's position
@@ -271,8 +271,6 @@ public class MainGame {
                         // Win!
                         youAreTheWinner(primaryStage);
                     }
-                } else {
-                    score = 0;
                 }
             }
         };
@@ -287,7 +285,7 @@ public class MainGame {
 
     private void handleJump() {
         if (!isJumping) {
-            yVelocity = jumpStrength;
+            yVelocity = JUMP_STRENGTH;
             isJumping = true;
         }
     }

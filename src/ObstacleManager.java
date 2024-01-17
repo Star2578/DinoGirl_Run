@@ -3,6 +3,8 @@ import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -14,84 +16,59 @@ import java.util.Random;
 
 public class ObstacleManager {
     GameManager gameManager = GameManager.getInstance();
-    private final StackPane root;
-    private final Shape collider;
-    private final int screenWidth;
-    private final int screenHeight;
+    private final StackPane ROOT;
+    private final Shape COLLIDER;
+    private final int SCREEN_WIDTH;
+    private final int SCREEN_HEIGHT;
     private ImageView obstacle;
     private Timeline timeline;
     private double obstacleSpeed = 3.0; // Initial obstacle speed
-    private final int[] thresholds = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
-    private final double[] speedMultipliers = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
-    private final String[] obstacleNames = {"TNT", "Cactus", "Bone", "Steak"};
-    private final String[] obstacleTextures = {"Sprites/TNT.png", "Sprites/Cactus.png", "Sprites/Bone.png", "Sprites/steak.png"};
-    private Obstacle newObstacle;
-    private int currentRandomNumber;
+    private final int[] THRESHOLDS = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
+    private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
+    private final Obstacle[] OBSTACLES = {
+            new TNT(), new Cactus(), new Steak(), new Bone()
+    };
     private int currentLevel = 0; // Track the current level
     private int currentScore = 0;
     private double widthSize;
     private double heightSize;
     private double defaultSpawnY;
 
+    // TODO: Add obstacle rarity
+    // Prepare for rare obstacles in future
+    private final int legendaryProbability = 1; // Giga Chad, Big Mac, Elon Musk, Walter White, Arcane Rune(+5000, +1 block)
+    private final int superRareProbability = 5; // David, Spartan Shield(+1 block until hit), Weird Potion(Low Gravity)
+    private final int rareProbability = 10; // Sans (Will not actually hit you "Miss!"), Emiya, Legosi, Syringe(+1000)
+    private final int uncommonProbability = 34; // Cake(+500), Emiya's blades, Ezreal, Croissant(+250), Fake_Cake(Kill)
+    private final int commonProbability = 50; // TNT, Steak(+50), Cactus, Bone, UFO, Hamburger(+100), Cross, Cookie(+10), Rotten_Flesh(-100)
+
     public ObstacleManager(StackPane root, Shape collider, int screenWidth, int screenHeight) {
-        this.root = root;
-        this.collider = collider;
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+        this.ROOT = root;
+        this.COLLIDER = collider;
+        this.SCREEN_WIDTH = screenWidth;
+        this.SCREEN_HEIGHT = screenHeight;
     }
 
     public Obstacle createObstacle() {
         Random random = new Random();
-        currentRandomNumber = random.nextInt(0, obstacleNames.length);
-        newObstacle = new Obstacle(obstacleNames[currentRandomNumber], obstacleTextures[currentRandomNumber]) {
-            @Override
-            public void behavior() {
-                String name = obstacleNames[currentRandomNumber];
-                defaultSpawnY = 150;
+        int randomNumber = random.nextInt(100); // 100% probability
 
-                if (Objects.equals(name, "TNT")) {
-                    widthSize = 50;
-                    heightSize = 50;
-                    newObstacle.setType("Damage");
-                }
+        int currentRandomNumber = random.nextInt(0, OBSTACLES.length);
+        Obstacle newObstacle = OBSTACLES[currentRandomNumber];
+        newObstacle.getTexture().setFitHeight(newObstacle.getHeight());
+        newObstacle.getTexture().setFitWidth(newObstacle.getWidth());
+        newObstacle.getTexture().setPreserveRatio(true);
 
-                if (Objects.equals(name, "Cactus")) {
-                    widthSize = 50;
-                    heightSize = 100;
-                    defaultSpawnY -= (heightSize/3);
-                    newObstacle.setType("Damage");
-                }
+        defaultSpawnY = newObstacle.spawnOffsetY;
 
-                if (Objects.equals(name, "Bone")) {
-                    widthSize = 100;
-                    heightSize = 50;
-                    defaultSpawnY = 50;
-                    newObstacle.setType("Damage");
-                }
-
-                if (Objects.equals(name, "Steak")) {
-                    widthSize = 50;
-                    heightSize = 50;
-                    newObstacle.setType("Score");
-                    newObstacle.setAdditionalScore(100);
-                }
-                newObstacle.getTextTure().setFitWidth(widthSize);
-                newObstacle.getTextTure().setFitHeight(heightSize);
-                newObstacle.getTextTure().setPreserveRatio(true);
-
-                System.out.println("Spawned " + name);
-            }
-        };
-
-
-        return  newObstacle;
+        return newObstacle;
     }
 
     public void startObstacleAnimation(Obstacle obstacle) {
-        ImageView obstacleTexture = obstacle.getTextTure();
-        obstacle.behavior();
+        ImageView obstacleTexture = obstacle.getTexture();
+        obstacle.obstacleInfo();
 
-        root.getChildren().add(obstacleTexture);
+        ROOT.getChildren().add(obstacleTexture);
 
         // Set the initial position of the obstacle (e.g., off-screen)
         obstacleTexture.setTranslateX((double) gameManager.getScreenWidth() / 2);
@@ -103,7 +80,7 @@ public class ObstacleManager {
                     obstacleTexture.setTranslateX(obstacleTexture.getTranslateX() - obstacleSpeed); // Adjust speed as needed
 
                     // Check for collision with the Dino girl
-                    if (obstacleTexture.getBoundsInParent().intersects(collider.getBoundsInParent())) {
+                    if (obstacleTexture.getBoundsInParent().intersects(COLLIDER.getBoundsInParent())) {
                         String type = obstacle.getType();
 
                         if (Objects.equals(type, "Score")) {
@@ -113,7 +90,7 @@ public class ObstacleManager {
                             timeline.stop();
 
                             // Destroy obj and start new obj timeline
-                            root.getChildren().remove(obstacleTexture);
+                            ROOT.getChildren().remove(obstacleTexture);
                             startObstacleAnimation(createObstacle());
                         }
 
@@ -125,8 +102,8 @@ public class ObstacleManager {
                     }
 
                     // Remove obstacle when off-screen
-                    if (obstacleTexture.getTranslateX()  < ((double) screenWidth / -2)) {
-                        root.getChildren().remove(obstacleTexture);
+                    if (obstacleTexture.getTranslateX()  < ((double) SCREEN_WIDTH / -2)) {
+                        ROOT.getChildren().remove(obstacleTexture);
                         // System.out.println("Vanished!");
                         timeline.stop();
                         startObstacleAnimation(createObstacle());
@@ -143,9 +120,9 @@ public class ObstacleManager {
         currentScore += score;
 
         int nextLevel = currentLevel + 1;
-        if (nextLevel < thresholds.length && currentScore >= thresholds[nextLevel]) {
+        if (nextLevel < THRESHOLDS.length && currentScore >= THRESHOLDS[nextLevel]) {
             currentLevel = nextLevel;
-            obstacleSpeed = 3.0 * speedMultipliers[currentLevel];
+            obstacleSpeed = 3.0 * SPEED_MULTIPLIER[currentLevel];
         }
     }
 
@@ -176,25 +153,28 @@ public class ObstacleManager {
         StackPane.setAlignment(gameOverLayout, Pos.CENTER);
 
         // Add the VBox containing both elements to the root StackPane
-        root.getChildren().add(gameOverLayout);
+        ROOT.getChildren().add(gameOverLayout);
 
         gameManager.setGameOverStatus(true);
 
-        restart.setOnAction(actionEvent -> {
-            gameManager.setGameOverStatus(false);
-            root.getChildren().remove(gameOverLayout);
-            currentScore = 0;
+        restart.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            // Check if the event was triggered by a primary mouse click
+            if (event.getButton() == MouseButton.PRIMARY) {
+                gameManager.setGameOverStatus(false);
+                ROOT.getChildren().remove(gameOverLayout);
+                currentScore = 0;
 
-            // reset speed
-            obstacleSpeed = 3.0;
-            currentLevel = 0;
+                // reset speed
+                obstacleSpeed = 3.0;
+                currentLevel = 0;
 
-            // Stop the current obstacle animation
-            timeline.stop();
-            root.getChildren().remove(deleteMe); // Remove existing obstacles
+                // Stop the current obstacle animation
+                timeline.stop();
+                ROOT.getChildren().remove(deleteMe); // Remove existing obstacles
 
-            // Restart the game loop
-            startObstacleAnimation(createObstacle());
+                // Restart the game loop
+                startObstacleAnimation(createObstacle());
+            }
         });
     }
 
@@ -204,7 +184,7 @@ public class ObstacleManager {
         scoreMessage.setStyle("-fx-font-size: 30; -fx-fill: #26ff00; -fx-font-weight: bold;");
 
         // Add the score message to the root
-        root.getChildren().add(scoreMessage);
+        ROOT.getChildren().add(scoreMessage);
 
         scoreMessage.setTranslateX(posX);
         scoreMessage.setTranslateY(posY - 50);
@@ -212,7 +192,7 @@ public class ObstacleManager {
         // Create a timeline to fade out the score message after 1 second
         Timeline scoreMessageTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), e -> {
-                    root.getChildren().remove(scoreMessage);
+                    ROOT.getChildren().remove(scoreMessage);
                 })
         );
         scoreMessageTimeline.play();
