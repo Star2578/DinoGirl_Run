@@ -4,6 +4,11 @@ public class TNT extends Obstacle {
         width = 50;
         height = 50;
         setType("Damage");
-        setTextureFromPath("Sprites/Obstacle/TNT.png");
+        setTextureFromPath("Sprites/Obstacle_Sprites/TNT.png");
+    }
+
+    @Override
+    public void obstacleInfo() {
+
     }
 }

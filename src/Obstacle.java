@@ -1,5 +1,7 @@
 import javafx.scene.image.ImageView;
 
+import java.util.Random;
+
 public class Obstacle {
     protected String name;
     protected int height;
@@ -10,7 +12,7 @@ public class Obstacle {
     protected double spawnOffsetY = 150;
 
     public Obstacle() {
-        this.name = "null Obstacle";
+
     }
 
     public Obstacle(String name, String textTurePath) {
@@ -44,9 +46,27 @@ public class Obstacle {
 
     public void obstacleInfo() {
         // for override
+        // use for setup some random spawn point
+        Random random = new Random();
+        int dif = random.nextInt(0, 50);
+        if (dif <= 25) {
+            setSpawnOffsetY(50);
+        }
     }
 
     public void behavior() {
         // for override
+    }
+
+    public Obstacle clone() {
+        Obstacle newObstacle = new Obstacle();
+        newObstacle.setName(this.getName());
+        newObstacle.setTexture(this.getTexture());
+        newObstacle.setType(this.getType());
+        newObstacle.setHeight(this.getHeight());
+        newObstacle.setWidth(this.getWidth());
+        newObstacle.setAdditionalScore(this.getAdditionalScore());
+        newObstacle.setSpawnOffsetY(this.getSpawnOffsetY());
+        return newObstacle;
     }
 }

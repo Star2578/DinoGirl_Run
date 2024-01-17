@@ -4,7 +4,12 @@ public class Cactus extends Obstacle{
         width = 50;
         height = 100;
         setType("Damage");
-        setTextureFromPath("Sprites/Obstacle/Cactus.png");
+        setTextureFromPath("Sprites/Obstacle_Sprites/Cactus.png");
         spawnOffsetY -= (double) height /3;
+    }
+
+    @Override
+    public void obstacleInfo() {
+
     }
 }

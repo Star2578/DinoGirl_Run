@@ -26,13 +26,11 @@ public class ObstacleManager {
     private final int[] THRESHOLDS = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
     private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
     private final Obstacle[] OBSTACLES = {
-            new TNT(), new Cactus(), new Steak(), new Bone()
+            new TNT(), new Cactus(), new Steak(), new Bone(), new Burger(), new Cake(), new Rotten_Flesh(), new Croissant(),
+            new Cross()
     };
     private int currentLevel = 0; // Track the current level
     private int currentScore = 0;
-    private double widthSize;
-    private double heightSize;
-    private double defaultSpawnY;
 
     // TODO: Add obstacle rarity
     // Prepare for rare obstacles in future
@@ -59,20 +57,19 @@ public class ObstacleManager {
         newObstacle.getTexture().setFitWidth(newObstacle.getWidth());
         newObstacle.getTexture().setPreserveRatio(true);
 
-        defaultSpawnY = newObstacle.spawnOffsetY;
-
         return newObstacle;
     }
 
     public void startObstacleAnimation(Obstacle obstacle) {
         ImageView obstacleTexture = obstacle.getTexture();
         obstacle.obstacleInfo();
+        double spawnPointY = obstacle.getSpawnOffsetY();
 
         ROOT.getChildren().add(obstacleTexture);
 
         // Set the initial position of the obstacle (e.g., off-screen)
         obstacleTexture.setTranslateX((double) gameManager.getScreenWidth() / 2);
-        obstacleTexture.setTranslateY(defaultSpawnY); // Adjust Y position as needed
+        obstacleTexture.setTranslateY(spawnPointY); // Adjust Y position as needed
 
         // Define the obstacle movement animation
         timeline = new Timeline(
@@ -180,22 +177,41 @@ public class ObstacleManager {
 
     // Display a score message for a brief moment
     private void displayScoreMessage(int additionalScore, double posX, double posY) {
-        Text scoreMessage = new Text("+" + additionalScore);
-        scoreMessage.setStyle("-fx-font-size: 30; -fx-fill: #26ff00; -fx-font-weight: bold;");
+        if (additionalScore >= 0) {
+            Text scoreMessage = new Text("+" + additionalScore);
+            scoreMessage.setStyle("-fx-font-size: 30; -fx-fill: #26ff00; -fx-font-weight: bold;");
 
-        // Add the score message to the root
-        ROOT.getChildren().add(scoreMessage);
+            // Add the score message to the root
+            ROOT.getChildren().add(scoreMessage);
 
-        scoreMessage.setTranslateX(posX);
-        scoreMessage.setTranslateY(posY - 50);
+            scoreMessage.setTranslateX(posX);
+            scoreMessage.setTranslateY(posY - 50);
 
-        // Create a timeline to fade out the score message after 1 second
-        Timeline scoreMessageTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), e -> {
-                    ROOT.getChildren().remove(scoreMessage);
-                })
-        );
-        scoreMessageTimeline.play();
+            // Create a timeline to fade out the score message after 1 second
+            Timeline scoreMessageTimeline = new Timeline(
+                    new KeyFrame(Duration.seconds(1), e -> {
+                        ROOT.getChildren().remove(scoreMessage);
+                    })
+            );
+            scoreMessageTimeline.play();
+        } else {
+            Text scoreMessage = new Text("" + additionalScore);
+            scoreMessage.setStyle("-fx-font-size: 30; -fx-fill: #ff0000; -fx-font-weight: bold;");
+
+            // Add the score message to the root
+            ROOT.getChildren().add(scoreMessage);
+
+            scoreMessage.setTranslateX(posX);
+            scoreMessage.setTranslateY(posY - 50);
+
+            // Create a timeline to fade out the score message after 1 second
+            Timeline scoreMessageTimeline = new Timeline(
+                    new KeyFrame(Duration.seconds(1), e -> {
+                        ROOT.getChildren().remove(scoreMessage);
+                    })
+            );
+            scoreMessageTimeline.play();
+        }
     }
 
     public void setCurrentScore(int currentScore) { this.currentScore = currentScore; }
