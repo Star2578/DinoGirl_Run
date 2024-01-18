@@ -5,6 +5,6 @@ public class Bone extends Obstacle{
         height = 50;
         setType("Damage");
         setTextureFromPath("Sprites/Obstacle_Sprites/Bone.png");
-        spawnOffsetY = 50;
+        defaultGround = 50;
     }
 }

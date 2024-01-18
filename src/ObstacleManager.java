@@ -27,11 +27,10 @@ public class ObstacleManager {
     private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
     private final Obstacle[] OBSTACLES = {
             new TNT(), new Cactus(), new Steak(), new Bone(), new Burger(), new Cake(), new Rotten_Flesh(), new Croissant(),
-            new Cross()
-    };
+            new Cross(), new Fake_Cake(), new Cookie(), new UFO()
+   };
     private int currentLevel = 0; // Track the current level
     private int currentScore = 0;
-
     // TODO: Add obstacle rarity
     // Prepare for rare obstacles in future
     private final int legendaryProbability = 1; // Giga Chad, Big Mac, Elon Musk, Walter White, Arcane Rune(+5000, +1 block)
@@ -63,7 +62,7 @@ public class ObstacleManager {
     public void startObstacleAnimation(Obstacle obstacle) {
         ImageView obstacleTexture = obstacle.getTexture();
         obstacle.obstacleInfo();
-        double spawnPointY = obstacle.getSpawnOffsetY();
+        double spawnPointY = obstacle.spawnPoint;
 
         ROOT.getChildren().add(obstacleTexture);
 

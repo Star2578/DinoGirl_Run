@@ -76,8 +76,12 @@ public class MainGame {
 
         root.getChildren().add(groundContainer);
         groundContainer.setAlignment(Pos.CENTER);
-        groundContainer.setSpacing(0);
-        groundContainer.setTranslateY(270);
+        groundContainer.setSpacing(-1);
+        if (gameManager.getScreenHeight() > 720 || gameManager.getScreenWidth() > 1280) {
+            groundContainer.setTranslateY(295);
+        } else {
+            groundContainer.setTranslateY(270);
+        }
 
         // Create and add the T-Rex character (you'll need to provide the image path)
         ImageView dinoGirlView = new ImageView(new Image("Sprites/Player/Dino.png"));
@@ -267,7 +271,7 @@ public class MainGame {
                     scoreText.setText(formattedScore);
                     obstacleManager.updateSpeed(score); // Update the score for speed multiplier
 
-                    if (obstacleManager.getCurrentScore() == 99999) {
+                    if (obstacleManager.getCurrentScore() >= 99999) {
                         // Win!
                         youAreTheWinner(primaryStage);
                     }

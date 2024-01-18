@@ -23,8 +23,8 @@ public class GameManager {
 
     public GameManager() {
         // default values
-        screenWidth = 800;
-        screenHeight = 600;
+        screenWidth = 1280;
+        screenHeight = 720;
 
         loadSettings();
     }

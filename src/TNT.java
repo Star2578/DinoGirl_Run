@@ -9,6 +9,6 @@ public class TNT extends Obstacle {
 
     @Override
     public void obstacleInfo() {
-
+        spawnPoint = defaultGround;
     }
 }

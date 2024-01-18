@@ -9,7 +9,9 @@ public class Obstacle {
     protected String type;
     protected int additionalScore;
     protected ImageView texture;
-    protected double spawnOffsetY = 150;
+    public double spawnPoint;
+    protected double defaultGround = 150;
+    protected double defaultAir = 50;
 
     public Obstacle() {
 
@@ -33,8 +35,8 @@ public class Obstacle {
         this.width = width;
     }
     public void setAdditionalScore(int additionalScore) { this.additionalScore = additionalScore; }
-
-    public void setSpawnOffsetY(double spawnOffsetY) { this.spawnOffsetY = spawnOffsetY; }
+    public void setDefaultAir(double defaultAir) { this.defaultAir = defaultAir; }
+    public void setDefaultGround(double defaultGround) { this.defaultGround = defaultGround; }
 
     public String getName() { return name; }
     public ImageView getTexture() { return texture; }
@@ -42,7 +44,8 @@ public class Obstacle {
     public int getWidth() { return width; }
     public int getHeight() { return height; }
     public int getAdditionalScore() { return additionalScore; }
-    public double getSpawnOffsetY() { return spawnOffsetY; }
+    public double getDefaultAir() { return defaultAir; }
+    public double getDefaultGround() { return defaultGround; }
 
     public void obstacleInfo() {
         // for override
@@ -50,7 +53,9 @@ public class Obstacle {
         Random random = new Random();
         int dif = random.nextInt(0, 50);
         if (dif <= 25) {
-            setSpawnOffsetY(50);
+            spawnPoint = defaultGround;
+        } else {
+            spawnPoint = defaultAir;
         }
     }
 
@@ -66,7 +71,7 @@ public class Obstacle {
         newObstacle.setHeight(this.getHeight());
         newObstacle.setWidth(this.getWidth());
         newObstacle.setAdditionalScore(this.getAdditionalScore());
-        newObstacle.setSpawnOffsetY(this.getSpawnOffsetY());
+        newObstacle.setDefaultGround(this.getDefaultGround());
         return newObstacle;
     }
 }
