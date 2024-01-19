@@ -25,19 +25,29 @@ public class ObstacleManager {
     private double obstacleSpeed = 5.0; // Initial obstacle speed
     private final int[] THRESHOLDS = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
     private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
-    private final Obstacle[] OBSTACLES = {
-            new TNT(), new Cactus(), new Steak(), new Bone(), new Burger(), new Cake(), new Rotten_Flesh(), new Croissant(),
-            new Cross(), new Fake_Cake(), new Cookie(), new UFO()
-   };
+    private final Obstacle[] legendaryObstacles = {
+            new GigaChad()
+    };
+    private final Obstacle[] superRareObstacles = {
+            new David()
+    };
+    private final Obstacle[] rareObstacles = {
+            new Sans()
+    };
+    private final Obstacle[] uncommonObstacles = {
+            new Cake(), new Fake_Cake(), new Croissant()
+    };
+    private final Obstacle[] commonObstacles = {
+            new TNT(), new Cactus(), new Steak(), new Bone(), new UFO(), new Burger(), new Cross(), new Cookie(), new Rotten_Flesh()
+    };
+
     private int currentLevel = 0; // Track the current level
     private int currentScore = 0;
-    // TODO: Add obstacle rarity
-    // Prepare for rare obstacles in future
-    private final int legendaryProbability = 1; // Giga Chad, Big Mac, Elon Musk, Walter White, Arcane Rune(+5000, +1 block)
-    private final int superRareProbability = 5; // David, Spartan Shield(+1 block until hit), Weird Potion(Low Gravity)
-    private final int rareProbability = 10; // Sans (Will not actually hit you "Miss!"), Emiya, Legosi, Syringe(+1000)
-    private final int uncommonProbability = 34; // Cake(+500), Emiya's blades, Ezreal, Croissant(+250), Fake_Cake(Kill)
-    private final int commonProbability = 50; // TNT, Steak(+50), Cactus, Bone, UFO, Hamburger(+100), Cross, Cookie(+10), Rotten_Flesh(-100)
+    private int legendaryProbability = 1; // Giga Chad(+10000), Big Mac, Elon Musk, Walter White, Arcane Rune(+5000, +1 block)
+    private int superRareProbability = 5; // David (-2077), Spartan Shield(+1 block until hit), Weird Potion(Low Gravity)
+    private int rareProbability = 10; // Sans (Will not actually hit you "Miss!"), Emiya, Legosi, Syringe(+1000)
+    private int uncommonProbability = 34; // Cake(+500), Emiya's blades, Ezreal, Croissant(+250), Fake_Cake(Kill)
+    private int commonProbability = 50; // TNT, Steak(+50), Cactus, Bone, UFO, Hamburger(+100), Cross, Cookie(+10), Rotten_Flesh(-100)
 
     public ObstacleManager(StackPane root, Shape collider, int screenWidth, int screenHeight) {
         this.ROOT = root;
@@ -46,12 +56,61 @@ public class ObstacleManager {
         this.SCREEN_HEIGHT = screenHeight;
     }
 
+    public void adjustProbabilities(int newCommon, int newUncommon, int newRare, int newSuperRare, int newLegendary) {
+        commonProbability = newCommon;
+        uncommonProbability = newUncommon;
+        rareProbability = newRare;
+        superRareProbability = newSuperRare;
+        legendaryProbability = newLegendary;
+
+        if (commonProbability + uncommonProbability + rareProbability + superRareProbability + legendaryProbability > 100) {
+            System.out.println("ERROR, Probability exceeded 100!!!");
+        }
+    }
+
     public Obstacle createObstacle() {
         Random random = new Random();
         int randomNumber = random.nextInt(100); // 100% probability
 
-        int currentRandomNumber = random.nextInt(0, OBSTACLES.length);
-        Obstacle newObstacle = OBSTACLES[currentRandomNumber];
+        Obstacle newObstacle;
+
+        if (randomNumber < commonProbability) {
+
+            // random one of the common obstacle
+            System.out.println(randomNumber + " Common");
+            int randomCommon = random.nextInt(0, commonObstacles.length);
+            newObstacle = commonObstacles[randomCommon];
+
+        } else if (randomNumber < commonProbability + uncommonProbability) {
+
+            // random one of the uncommon obstacle
+            System.out.println(randomNumber + " Uncommon");
+            int randomUncommon = random.nextInt(0, uncommonObstacles.length);
+            newObstacle = uncommonObstacles[randomUncommon];
+
+        } else if (randomNumber < commonProbability + uncommonProbability + rareProbability) {
+
+            // random one of the rare obstacle
+            System.out.println(randomNumber + " Rare");
+            int randomRare = random.nextInt(0, rareObstacles.length);
+            newObstacle = rareObstacles[randomRare];
+
+        } else if (randomNumber < commonProbability + uncommonProbability + rareProbability + superRareProbability) {
+
+            // random one of the super rare obstacle
+            System.out.println(randomNumber + " Super Rare");
+            int randomSuperRare = random.nextInt(0, superRareObstacles.length);
+            newObstacle = superRareObstacles[randomSuperRare];
+
+        } else {
+
+            // random one of the legendary obstacle
+            System.out.println(randomNumber + " Legendary");
+            int randomLegendary = random.nextInt(0, legendaryObstacles.length);
+            newObstacle = legendaryObstacles[randomLegendary];
+
+        }
+
         newObstacle.getTexture().setFitHeight(newObstacle.getHeight());
         newObstacle.getTexture().setFitWidth(newObstacle.getWidth());
         newObstacle.getTexture().setPreserveRatio(true);
@@ -94,6 +153,10 @@ public class ObstacleManager {
                             // Handle Game Over
                             timeline.stop(); // Stop the Game
                             displayGameOver(obstacleTexture);
+                        }
+
+                        if (Objects.equals(type, "Trap")) {
+                            obstacle.behavior(ROOT, obstacleTexture);
                         }
                     }
 

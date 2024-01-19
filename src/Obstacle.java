@@ -1,4 +1,5 @@
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 import java.util.Random;
 
@@ -59,7 +60,7 @@ public class Obstacle {
         }
     }
 
-    public void behavior() {
+    public void behavior(StackPane root, ImageView obstacle) {
         // for override
     }
 
