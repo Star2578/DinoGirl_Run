@@ -283,6 +283,7 @@ public class MainGame {
 
                     if (obstacleManager.getCurrentScore() >= 99999) {
                         // Win!
+                        gameManager.saveGame();
                         youAreTheWinner(primaryStage);
                     }
                 }

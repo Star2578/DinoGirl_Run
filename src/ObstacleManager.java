@@ -194,6 +194,8 @@ public class ObstacleManager {
     }
 
     public void displayGameOver(ImageView deleteMe) {
+        gameManager.saveGame();
+
         Text gameOverText = new Text("Game Over!");
         gameOverText.setStyle("-fx-font-size: 80;");
 

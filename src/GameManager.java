@@ -7,9 +7,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import java.io.*;
+import java.util.Properties;
 
 public class GameManager {
     private static GameManager instance;
@@ -18,15 +20,24 @@ public class GameManager {
     private int screenHeight;
     private boolean isGameOver = false;
     private boolean isPause = false;
-
+    private Properties settingProperties;
+    private Properties gameProperties;
     private Scene mainMenuScene;
+
+    // Game Progression to be save
+    private int highScore = 0;
+    // Dino Girl's skins
+    // Achievements
 
     public GameManager() {
         // default values
         screenWidth = 1280;
         screenHeight = 720;
 
+        settingProperties = new Properties();
+        gameProperties = new Properties();
         loadSettings();
+        loadGame();
     }
 
     public static GameManager getInstance() {
@@ -60,6 +71,9 @@ public class GameManager {
 
     public Scene getMainMenuScene() { return mainMenuScene; }
     public void setMainMenuScene(Scene mainMenuScene) { this.mainMenuScene = mainMenuScene; }
+
+    public int getHighScore() { return highScore; }
+    public void setHighScore(int highScore) { this.highScore = highScore; }
 
     public Scene setting(Stage stage, Scene previousScene) {
         // Create UI elements for the settings scene
@@ -130,6 +144,7 @@ public class GameManager {
 
         // Handle action for the "Back" button to return to the main menu
         backButton.setOnAction(e -> {
+            saveSettings();
             stage.setScene(previousScene); // Return to the previous scene
         });
 
@@ -138,8 +153,57 @@ public class GameManager {
 
     private void loadSettings() {
         // Implement loading settings from file
+        try (InputStream input = new FileInputStream("config.properties")) {
+            settingProperties.load(input);
+
+            // Load settings from properties
+            setScreenWidth(Integer.parseInt(settingProperties.getProperty("screenWidth", "1280")));
+            setScreenHeight(Integer.parseInt(settingProperties.getProperty("screenHeight", "720")));
+            // Load other settings...
+
+        } catch (IOException ignored) {
+
+        }
     }
     private void saveSettings() {
         // Implement saving settings to file
+        try (OutputStream output = new FileOutputStream("config.properties")) {
+            // Save settings to properties
+            settingProperties.setProperty("screenWidth", String.valueOf(getScreenWidth()));
+            settingProperties.setProperty("screenHeight", String.valueOf(getScreenHeight()));
+            // Save other settings...
+
+            settingProperties.store(output, "Game Settings");
+
+        } catch (IOException ignored) {
+
+        }
+    }
+
+    public void saveGame() {
+        // save the game progression
+        try (OutputStream output = new FileOutputStream("config.progression")) {
+            // Save settings to properties
+            gameProperties.setProperty("HighScore", String.valueOf(highScore));
+
+            gameProperties.store(output, "Game Progression");
+
+        } catch (IOException ignored) {
+
+        }
+    }
+
+    public void loadGame() {
+        // load the game progression
+        try (InputStream input = new FileInputStream("config.progression")) {
+            gameProperties.load(input);
+
+            // Load settings from properties
+            setHighScore(Integer.parseInt(gameProperties.getProperty("HighScore", "0")));
+
+
+        } catch (IOException ignored) {
+
+        }
     }
 }

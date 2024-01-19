@@ -84,6 +84,7 @@ public class MainMenu extends Application {
         // Quit
         quit.setOnAction(actionEvent -> {
             System.out.println("Quit");
+            gameManager.saveGame();
             Stage stage = (Stage) quit.getScene().getWindow();
             stage.close();
         });
