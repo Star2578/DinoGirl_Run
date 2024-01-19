@@ -216,6 +216,7 @@ public class MainGame {
             if (event.getCode() == KeyCode.F3) {
                 capsuleShape.setVisible(!capsuleShape.isVisible());
             }
+            // F1 to show winner scene
             if (event.getCode() == KeyCode.F1) {
                 youAreTheWinner(primaryStage);
             }
@@ -336,6 +337,7 @@ public class MainGame {
     }
 
     private void youAreTheWinner(Stage stage) {
+        gameLoop.stop();
         StackPane root = new StackPane();
         Scene winScene = SceneManager.createScene(root);
         root.setStyle("-fx-background-color: black");
