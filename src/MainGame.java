@@ -25,12 +25,16 @@ public class MainGame {
 
     private final double GRAVITY = 0.4;
     private final double CROUCH_GRAVITY = GRAVITY * 2;
+    private double xVelocity = 0;
     private double yVelocity = 0;
     private boolean isJumping = false;
     private boolean isCrouching = false;
     private final double JUMP_STRENGTH = -15;
+    private final double MOVEMENT_SPEED = 10;
     private AnimationTimer gameLoop;
     private double groundPos;
+    private boolean isMoveLeft = false;
+    private boolean isMoveRight = false;
 
     public void start(Stage primaryStage) {
         StackPane root = new StackPane();
@@ -186,10 +190,7 @@ public class MainGame {
 
         // Handle input actions
         gameScene.setOnKeyPressed(event -> {
-            // Jump
-            if (event.getCode() == KeyCode.W || event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.UP) {
-                handleJump();
-            }
+            handleMovementAndJumping(event.getCode());
 
             // Crouch
             if (event.getCode() == KeyCode.S || event.getCode() == KeyCode.DOWN || event.getCode() == KeyCode.CONTROL) {
@@ -221,10 +222,7 @@ public class MainGame {
         });
 
         gameScene.setOnKeyReleased(event -> {
-            // Reset crouching state
-            if (event.getCode() == KeyCode.S || event.getCode() == KeyCode.DOWN || event.getCode() == KeyCode.CONTROL) {
-                isCrouching = false;
-            }
+            handleKeyReleased(event.getCode());
         });
 
         // Game loop using AnimationTimer
@@ -241,9 +239,20 @@ public class MainGame {
                     } else {
                         yVelocity += GRAVITY; // Default gravity
                     }
+                    if (isMoveLeft) xVelocity = -MOVEMENT_SPEED;
+                    if (isMoveRight) xVelocity = MOVEMENT_SPEED;
+                    if (!isMoveLeft && !isMoveRight) xVelocity = 0;
 
                     // Update Dino girl's position
                     dinoGirlView.setTranslateY(dinoGirlView.getTranslateY() + yVelocity);
+                    dinoGirlView.setTranslateX(dinoGirlView.getTranslateX() + xVelocity);
+
+                    // Make her not go off the screen
+                    if (dinoGirlView.getTranslateX() < -((double) gameManager.getScreenWidth() / 2) + maxWidth / 2) {
+                        dinoGirlView.setTranslateX(-((double) gameManager.getScreenWidth() / 2) + maxWidth / 2);
+                    } else if (dinoGirlView.getTranslateX() > ((double) gameManager.getScreenWidth() / 2) - maxWidth / 2) {
+                        dinoGirlView.setTranslateX(((double) gameManager.getScreenWidth() / 2) - maxWidth / 2);
+                    }
 
                     // Check if Dino girl is on the ground
                     if (dinoGirlView.getTranslateY() >= groundPos) {
@@ -287,10 +296,42 @@ public class MainGame {
         primaryStage.show();
     }
 
-    private void handleJump() {
-        if (!isJumping) {
-            yVelocity = JUMP_STRENGTH;
-            isJumping = true;
+    private void handleMovementAndJumping(KeyCode keyCode) {
+        switch (keyCode) {
+            case A:
+            case LEFT:
+                isMoveLeft = true;
+                break;
+            case D:
+            case RIGHT:
+                isMoveRight = true;
+                break;
+            case W:
+            case SPACE:
+            case UP:
+                if (!isJumping) {
+                    yVelocity = JUMP_STRENGTH;
+                    isJumping = true;
+                }
+                break;
+        }
+    }
+
+    private void handleKeyReleased(KeyCode keyCode) {
+        switch (keyCode) {
+            case A:
+            case LEFT:
+                isMoveLeft = false;
+                break;
+            case D:
+            case RIGHT:
+                isMoveRight = false;
+                break;
+            case S:
+            case DOWN:
+            case CONTROL:
+                isCrouching = false;
+                break;
         }
     }
 

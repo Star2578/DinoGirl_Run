@@ -22,7 +22,7 @@ public class ObstacleManager {
     private final int SCREEN_HEIGHT;
     private ImageView obstacle;
     private Timeline timeline;
-    private double obstacleSpeed = 3.0; // Initial obstacle speed
+    private double obstacleSpeed = 5.0; // Initial obstacle speed
     private final int[] THRESHOLDS = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
     private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
     private final Obstacle[] OBSTACLES = {
@@ -72,7 +72,7 @@ public class ObstacleManager {
 
         // Define the obstacle movement animation
         timeline = new Timeline(
-                new KeyFrame(Duration.seconds(0.01), e -> {
+                new KeyFrame(Duration.seconds(0.0167), e -> {
                     obstacleTexture.setTranslateX(obstacleTexture.getTranslateX() - obstacleSpeed); // Adjust speed as needed
 
                     // Check for collision with the Dino girl
@@ -118,7 +118,7 @@ public class ObstacleManager {
         int nextLevel = currentLevel + 1;
         if (nextLevel < THRESHOLDS.length && currentScore >= THRESHOLDS[nextLevel]) {
             currentLevel = nextLevel;
-            obstacleSpeed = 3.0 * SPEED_MULTIPLIER[currentLevel];
+            obstacleSpeed = 5.0 * SPEED_MULTIPLIER[currentLevel];
         }
     }
 
@@ -161,7 +161,7 @@ public class ObstacleManager {
                 currentScore = 0;
 
                 // reset speed
-                obstacleSpeed = 3.0;
+                obstacleSpeed = 5.0;
                 currentLevel = 0;
 
                 // Stop the current obstacle animation
