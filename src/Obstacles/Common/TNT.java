@@ -1,6 +1,10 @@
+package Obstacles.Common;
+
+import Obstacles.Obstacle;
+
 public class TNT extends Obstacle {
     public TNT() {
-        name = "TNT";
+        name = "Obstacles.Common.TNT";
         width = 50;
         height = 50;
         setType("Damage");

@@ -1,8 +1,10 @@
-import java.util.Random;
+package Obstacles.Common;
 
-public class Steak extends Obstacle{
+import Obstacles.Obstacle;
+
+public class Steak extends Obstacle {
     public Steak() {
-        name = "Steak";
+        name = "Obstacles.Common.Steak";
         width = 50;
         height = 50;
         setType("Score");

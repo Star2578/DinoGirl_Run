@@ -43,8 +43,16 @@ public class MainMenu extends Application {
 
         title.setStyle("-fx-font-size:50;");
         VBox titleContainer = new VBox(title, subTitle);
-        titleContainer.setAlignment(Pos.CENTER);
+        titleContainer.setAlignment(Pos.TOP_LEFT);
         titleContainer.setSpacing(5);
+        titleContainer.setPadding(new Insets(20));
+
+        VBox highScoreContainer = new VBox();
+        Text highScore = new Text("High Score: " + gameManager.getHighScore());
+        highScore.setStyle("-fx-font-family: 'Comic Obstacles.Rare.Sans MS'; -fx-font-size: 20;");
+        highScoreContainer.getChildren().add(highScore);
+        highScoreContainer.setAlignment(Pos.TOP_RIGHT);
+        highScoreContainer.setPadding(new Insets(20));
 
         Button start = new Button("Start");
         Button option = new Button("Option");
@@ -54,7 +62,8 @@ public class MainMenu extends Application {
         buttonContainer.setSpacing(20);
         buttonContainer.setPadding(new Insets(20));
 
-        root.getChildren().addAll(titleContainer, versionContainer, buttonContainer);
+        root.getChildren().addAll(titleContainer, versionContainer, highScoreContainer);
+        root.getChildren().add(buttonContainer);
 
         addChangingDropShadow(title);
 
@@ -89,7 +98,7 @@ public class MainMenu extends Application {
             stage.close();
         });
 
-        menuScene.getRoot().setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size:16;");
+        menuScene.getRoot().setStyle("-fx-font-family: 'Comic Obstacles.Rare.Sans MS'; -fx-font-size:16;");
         primaryStage.show();
     }
 

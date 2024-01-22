@@ -1,6 +1,10 @@
-public class Cactus extends Obstacle{
+package Obstacles.Common;
+
+import Obstacles.Obstacle;
+
+public class Cactus extends Obstacle {
     public Cactus() {
-        name = "Cactus";
+        name = "Obstacles.Common.Cactus";
         width = 50;
         height = 100;
         setType("Damage");

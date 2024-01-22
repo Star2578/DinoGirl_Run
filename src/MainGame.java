@@ -267,8 +267,7 @@ public class MainGame {
                         dinoGirlView.setPreserveRatio(false);
                         dinoGirlView.setFitHeight(crouchHeight);
 
-                        double newY = initialYPosition + (maxHeight - crouchHeight)/2;
-                        groundPos = newY;
+                        groundPos = initialYPosition + (maxHeight - crouchHeight)/2;
                     } else {
                         dinoGirlView.setPreserveRatio(true);
                         dinoGirlView.setFitHeight(maxHeight);

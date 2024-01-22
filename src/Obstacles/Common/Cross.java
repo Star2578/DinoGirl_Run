@@ -1,6 +1,10 @@
+package Obstacles.Common;
+
+import Obstacles.Obstacle;
+
 public class Cross extends Obstacle {
     public Cross() {
-        name = "Cross";
+        name = "Obstacles.Common.Cross";
         width = 65;
         height = 80;
         setType("Damage");

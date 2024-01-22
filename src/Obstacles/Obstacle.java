@@ -1,3 +1,5 @@
+package Obstacles;
+
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 

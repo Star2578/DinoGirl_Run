@@ -1,4 +1,8 @@
-public class Rotten_Flesh extends Obstacle{
+package Obstacles.Common;
+
+import Obstacles.Obstacle;
+
+public class Rotten_Flesh extends Obstacle {
     public Rotten_Flesh() {
         name = "Rotten Flesh";
         width = 60;

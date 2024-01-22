@@ -1,6 +1,10 @@
-public class Cookie extends Obstacle{
+package Obstacles.Common;
+
+import Obstacles.Obstacle;
+
+public class Cookie extends Obstacle {
     public Cookie() {
-        name = "Cookie";
+        name = "Obstacles.Common.Cookie";
         width = 50;
         height = 50;
         setType("Score");

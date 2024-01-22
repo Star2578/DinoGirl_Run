@@ -1,4 +1,8 @@
-public class GigaChad extends Obstacle{
+package Obstacles.Legendary;
+
+import Obstacles.Obstacle;
+
+public class GigaChad extends Obstacle {
     public GigaChad() {
         name = "Giga Chad";
         width = 200;

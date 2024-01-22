@@ -1,16 +1,18 @@
+package Obstacles.Rare;
+
+import Obstacles.Obstacle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class Sans extends Obstacle{
+public class Sans extends Obstacle {
 
     boolean Missed = false;
     public Sans() {
-        name = "Sans";
+        name = "Obstacles.Rare.Sans";
         width = 150;
         height = 150;
         setType("Trap");

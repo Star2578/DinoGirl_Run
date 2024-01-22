@@ -1,6 +1,10 @@
-public class David extends Obstacle{
+package Obstacles.Superrare;
+
+import Obstacles.Obstacle;
+
+public class David extends Obstacle {
     public David() {
-        name = "David Martinez";
+        name = "Obstacles.Superrare.David Martinez";
         width = 180;
         height = 200;
         setType("Score");

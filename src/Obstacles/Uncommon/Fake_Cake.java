@@ -1,6 +1,10 @@
-public class Fake_Cake extends Obstacle{
+package Obstacles.Uncommon;
+
+import Obstacles.Obstacle;
+
+public class Fake_Cake extends Obstacle {
     public Fake_Cake() {
-        name = "Fake Cake";
+        name = "Fake Obstacles.Uncommon.Cake";
         width = 100;
         height = 70;
         setType("Damage");

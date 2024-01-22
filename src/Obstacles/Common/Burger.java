@@ -1,8 +1,12 @@
+package Obstacles.Common;
+
+import Obstacles.Obstacle;
+
 import java.util.Random;
 
 public class Burger extends Obstacle {
     public Burger() {
-        name = "Burger";
+        name = "Obstacles.Common.Burger";
         width = 60;
         height = 60;
         setType("Score");

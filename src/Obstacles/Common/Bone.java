@@ -1,6 +1,10 @@
-public class Bone extends Obstacle{
+package Obstacles.Common;
+
+import Obstacles.Obstacle;
+
+public class Bone extends Obstacle {
     public Bone() {
-        name = "Bone";
+        name = "Obstacles.Common.Bone";
         width = 100;
         height = 50;
         setType("Damage");

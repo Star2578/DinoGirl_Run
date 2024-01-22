@@ -1,3 +1,11 @@
+import Obstacles.*;
+import Obstacles.Common.*;
+import Obstacles.Legendary.GigaChad;
+import Obstacles.Rare.Sans;
+import Obstacles.Superrare.David;
+import Obstacles.Uncommon.Cake;
+import Obstacles.Uncommon.Croissant;
+import Obstacles.Uncommon.Fake_Cake;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
@@ -44,10 +52,10 @@ public class ObstacleManager {
     private int currentLevel = 0; // Track the current level
     private int currentScore = 0;
     private int legendaryProbability = 1; // Giga Chad(+10000), Big Mac, Elon Musk, Walter White, Arcane Rune(+5000, +1 block)
-    private int superRareProbability = 5; // David (-2077), Spartan Shield(+1 block until hit), Weird Potion(Low Gravity)
-    private int rareProbability = 10; // Sans (Will not actually hit you "Miss!"), Emiya, Legosi, Syringe(+1000)
-    private int uncommonProbability = 34; // Cake(+500), Emiya's blades, Ezreal, Croissant(+250), Fake_Cake(Kill)
-    private int commonProbability = 50; // TNT, Steak(+50), Cactus, Bone, UFO, Hamburger(+100), Cross, Cookie(+10), Rotten_Flesh(-100)
+    private int superRareProbability = 5; // Obstacles.Superrare.David (-2077), Spartan Shield(+1 block until hit), Weird Potion(Low Gravity)
+    private int rareProbability = 10; // Obstacles.Rare.Sans (Will not actually hit you "Miss!"), Emiya, Legosi, Syringe(+1000)
+    private int uncommonProbability = 34; // Obstacles.Uncommon.Cake(+500), Emiya's blades, Ezreal, Obstacles.Uncommon.Croissant(+250), Obstacles.Uncommon.Fake_Cake(Kill)
+    private int commonProbability = 50; // Obstacles.Common.TNT, Obstacles.Common.Steak(+50), Obstacles.Common.Cactus, Obstacles.Common.Bone, Obstacles.Common.UFO, Hamburger(+100), Obstacles.Common.Cross, Obstacles.Common.Cookie(+10), Obstacles.Common.Rotten_Flesh(-100)
 
     public ObstacleManager(StackPane root, Shape collider, int screenWidth, int screenHeight) {
         this.ROOT = root;
@@ -194,6 +202,8 @@ public class ObstacleManager {
     }
 
     public void displayGameOver(ImageView deleteMe) {
+        if (currentScore > gameManager.getHighScore())
+            gameManager.setHighScore(currentScore);
         gameManager.saveGame();
 
         Text gameOverText = new Text("Game Over!");

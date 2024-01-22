@@ -1,6 +1,10 @@
-public class Croissant extends Obstacle{
+package Obstacles.Uncommon;
+
+import Obstacles.Obstacle;
+
+public class Croissant extends Obstacle {
     public Croissant() {
-        name = "Croissant";
+        name = "Obstacles.Uncommon.Croissant";
         width = 60;
         height = 60;
         setType("Score");
