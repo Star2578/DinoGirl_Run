@@ -15,6 +15,7 @@ import java.util.Properties;
 
 public class GameManager {
     private static GameManager instance;
+    private SoundManager soundManager;
     public final double version = 0.2;
     private int screenWidth;
     private int screenHeight;
@@ -23,6 +24,15 @@ public class GameManager {
     private Properties settingProperties;
     private Properties gameProperties;
     private Scene mainMenuScene;
+
+    private static final float MIN_DECIBEL = -30.0f;
+    private static final float MAX_DECIBEL = 6.0f;
+    private static final float MID_DECIBEL = (MAX_DECIBEL + MIN_DECIBEL) / 2;
+
+    private float soundEffectVolume = MID_DECIBEL;
+    private float soundEffectSlider = 50.0f;
+    private float backgroundMusicVolume = MID_DECIBEL;
+    private float backgroundMusicSlider = 50.0f;
 
     // Game Progression to be save
     private int highScore = 0;
@@ -45,6 +55,10 @@ public class GameManager {
             instance = new GameManager();
         }
         return instance;
+    }
+
+    public void initialize(SoundManager soundManager) {
+        this.soundManager = soundManager;
     }
 
     public int getScreenWidth() {
@@ -75,6 +89,27 @@ public class GameManager {
     public int getHighScore() { return highScore; }
     public void setHighScore(int highScore) { this.highScore = highScore; }
 
+    public float getBackgroundMusicVolume() { return backgroundMusicVolume; }
+    public void setBackgroundMusicVolume(float backgroundMusicVolume) { this.backgroundMusicVolume = backgroundMusicVolume; }
+
+    public float getSoundEffectVolume() { return soundEffectVolume; }
+    public void setSoundEffectVolume(float soundEffectVolume) { this.soundEffectVolume = soundEffectVolume; }
+
+    public float getBackgroundMusicSlider() { return backgroundMusicSlider; }
+    public void setBackgroundMusicSlider(float backgroundMusicSlider) { this.backgroundMusicSlider = backgroundMusicSlider; }
+
+    public float getSoundEffectSlider() { return soundEffectSlider; }
+    public void setSoundEffectSlider(float soundEffectSlider) { this.soundEffectSlider = soundEffectSlider; }
+
+    // Mapping function to convert slider values to decibel range
+    private float mapToDecibelRange(float sliderValue) {
+        // Assuming the slider value ranges from 0 to 100
+        float normalizedValue = sliderValue / 100.0f;
+
+        // Map the normalized value to the decibel range using a logarithmic scale
+        return MIN_DECIBEL + normalizedValue * (MAX_DECIBEL - MIN_DECIBEL);
+    }
+
     public Scene setting(Stage stage, Scene previousScene) {
         // Create UI elements for the settings scene
         Button backButton = new Button("Back");
@@ -85,7 +120,33 @@ public class GameManager {
         Slider bgMusicSlider = new Slider();
         Slider sfxSlider = new Slider();
 
-        // TODO: Handle Music Slider
+        System.out.println("Set bg:" + getBackgroundMusicSlider());
+        System.out.println("Set sfx:" + getSoundEffectSlider());
+        bgMusicSlider.setValue(getBackgroundMusicSlider());
+        sfxSlider.setValue(getSoundEffectSlider());
+
+        // Event listener for background music volume slider
+        bgMusicSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            // Map the slider value to the decibel range
+            float decibelValue = mapToDecibelRange(newValue.floatValue());
+
+            // Adjust the background music volume in real-time
+            setBackgroundMusicVolume(decibelValue);
+            setBackgroundMusicSlider(newValue.floatValue());
+            soundManager.adjustBackgroundMusicVolume(getBackgroundMusicVolume());
+            System.out.println("new bg value(" + newValue + ", " + decibelValue + " dcb)");
+        });
+
+        // Event listener for SFX volume slider
+        sfxSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            // Map the slider value to the decibel range
+            float decibelValue = mapToDecibelRange(newValue.floatValue());
+
+            // Adjust the sound effect volume in real-time
+            setSoundEffectVolume(decibelValue);
+            setSoundEffectSlider(newValue.floatValue());
+            System.out.println("new sfx value(" + newValue + ", " + decibelValue + " dcb)");
+        });
 
         // Screen resolution adjustment (ComboBox)
         ComboBox<String> resolutionComboBox = new ComboBox<>();

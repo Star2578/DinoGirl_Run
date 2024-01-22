@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class MainMenu extends Application {
     GameManager gameManager = GameManager.getInstance();
+    SoundManager soundManager = SoundManager.getInstance();
 
     public static void main(String[] args) {
         launch(args);
@@ -29,6 +30,9 @@ public class MainMenu extends Application {
 
         primaryStage.setResizable(false); // Set window non-resizable
         primaryStage.setMaximized(false); // Disable maximizing
+
+        // Play background music
+        soundManager.playBackgroundMusic("src/Sounds/Minecraft.wav");
 
         StackPane root = new StackPane();
 
@@ -49,7 +53,7 @@ public class MainMenu extends Application {
 
         VBox highScoreContainer = new VBox();
         Text highScore = new Text("High Score: " + gameManager.getHighScore());
-        highScore.setStyle("-fx-font-family: 'Comic Obstacles.Rare.Sans MS'; -fx-font-size: 20;");
+        highScore.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
         highScoreContainer.getChildren().add(highScore);
         highScoreContainer.setAlignment(Pos.TOP_RIGHT);
         highScoreContainer.setPadding(new Insets(20));
@@ -78,6 +82,7 @@ public class MainMenu extends Application {
         // Start the Game
         start.setOnAction(actionEvent -> {
             System.out.println("Starting!");
+            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
             MainGame game = new MainGame();
             game.start(primaryStage);
         });
@@ -86,6 +91,7 @@ public class MainMenu extends Application {
         option.setOnAction(actionEvent -> {
             System.out.println("Option");
             Scene setting = gameManager.setting(primaryStage, gameManager.getMainMenuScene());
+            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
 
             primaryStage.setScene(setting);
         });
@@ -93,12 +99,13 @@ public class MainMenu extends Application {
         // Quit
         quit.setOnAction(actionEvent -> {
             System.out.println("Quit");
+            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
             gameManager.saveGame();
             Stage stage = (Stage) quit.getScene().getWindow();
             stage.close();
         });
 
-        menuScene.getRoot().setStyle("-fx-font-family: 'Comic Obstacles.Rare.Sans MS'; -fx-font-size:16;");
+        menuScene.getRoot().setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size:16;");
         primaryStage.show();
     }
 
