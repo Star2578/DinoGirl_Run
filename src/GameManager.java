@@ -206,6 +206,7 @@ public class GameManager {
         // Handle action for the "Back" button to return to the main menu
         backButton.setOnAction(e -> {
             saveSettings();
+            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
             stage.setScene(previousScene); // Return to the previous scene
         });
 
@@ -226,8 +227,8 @@ public class GameManager {
             setSoundEffectVolume(Float.parseFloat(settingProperties.getProperty("soundEffectVolume", String.valueOf(MID_DECIBEL))));
             // Load other settings...
 
-        } catch (IOException ignored) {
-
+        } catch (IOException e) {
+            System.out.println("Error when loading game setting:" + e.getMessage());
         }
     }
     private void saveSettings() {
@@ -244,8 +245,8 @@ public class GameManager {
 
             settingProperties.store(output, "Game Settings");
 
-        } catch (IOException ignored) {
-
+        } catch (IOException e) {
+            System.out.println("Error when saving game settings:" + e.getMessage());
         }
     }
 
@@ -257,8 +258,8 @@ public class GameManager {
 
             gameProperties.store(output, "Game Progression");
 
-        } catch (IOException ignored) {
-
+        } catch (IOException e) {
+            System.out.println("Error when saving game progress:" + e.getMessage());
         }
     }
 
@@ -271,8 +272,8 @@ public class GameManager {
             setHighScore(Integer.parseInt(gameProperties.getProperty("HighScore", "0")));
 
 
-        } catch (IOException ignored) {
-
+        } catch (IOException e) {
+            System.out.println("Error when loading game progression:" + e.getMessage());
         }
     }
 }

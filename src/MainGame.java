@@ -22,6 +22,7 @@ import javafx.util.Duration;
 
 public class MainGame {
     GameManager gameManager = GameManager.getInstance();
+    SoundManager soundManager = SoundManager.getInstance();
 
     private final double GRAVITY = 0.4;
     private final double CROUCH_GRAVITY = GRAVITY * 2;
@@ -165,16 +166,19 @@ public class MainGame {
 
         toMenu.setOnAction(actionEvent -> {
             System.out.println("To Menu(Paused)");
+            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
             primaryStage.setScene(gameManager.getMainMenuScene());
         });
 
         option.setOnAction(actionEvent -> {
             System.out.println("Option(Paused)");
+            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
             primaryStage.setScene(gameManager.setting(primaryStage, gameScene));
         });
 
         quit.setOnAction(actionEvent -> {
             System.out.println("Quit(Paused)");
+            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
             Stage stage = (Stage) quit.getScene().getWindow();
             stage.close();
         });
@@ -311,6 +315,7 @@ public class MainGame {
             case SPACE:
             case UP:
                 if (!isJumping) {
+                    soundManager.playSoundEffect("src/Sounds/Jump.wav");
                     yVelocity = JUMP_STRENGTH;
                     isJumping = true;
                 }
