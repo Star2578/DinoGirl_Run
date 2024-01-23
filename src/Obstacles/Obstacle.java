@@ -15,6 +15,7 @@ public class Obstacle {
     public double spawnPoint;
     protected double defaultGround = 150;
     protected double defaultAir = 50;
+    public String soundPath;
 
     public Obstacle() {
 
@@ -76,5 +77,14 @@ public class Obstacle {
         newObstacle.setAdditionalScore(this.getAdditionalScore());
         newObstacle.setDefaultGround(this.getDefaultGround());
         return newObstacle;
+    }
+
+    public String randomSFX(String[] choices) {
+        String sfx;
+        Random random = new Random();
+        int choose = random.nextInt(0, choices.length);
+        sfx = choices[choose];
+
+        return sfx;
     }
 }

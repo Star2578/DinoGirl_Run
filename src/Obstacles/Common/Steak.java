@@ -11,4 +11,10 @@ public class Steak extends Obstacle {
         setTextureFromPath("Sprites/Obstacle_Sprites/Steak.png");
         setAdditionalScore(50);
     }
+
+    @Override
+    public void obstacleInfo() {
+        super.obstacleInfo();
+        soundPath = randomSFX(new String[]{"src/Sounds/Retro PickUp 10.wav", "src/Sounds/Retro PickUp 18.wav"});
+    }
 }

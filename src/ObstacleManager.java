@@ -29,6 +29,10 @@ public class ObstacleManager {
     private final int SCREEN_HEIGHT;
     private Timeline timeline;
     private double obstacleSpeed = 5.0; // Initial obstacle speed
+    private final String[] gameOverSounds = {
+      "src/Sounds/Hurt/hurt_001.wav", "src/Sounds/Hurt/hurt_002.wav", "src/Sounds/Hurt/hurt_003.wav",
+      "src/Sounds/Hurt/hurt_004.wav", "src/Sounds/Hurt/hurt_005.wav"
+    };
     private final int[] THRESHOLDS = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
     private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
     private final Obstacle[] legendaryObstacles = {
@@ -143,6 +147,7 @@ public class ObstacleManager {
                     // Check for collision with the Dino girl
                     if (obstacleTexture.getBoundsInParent().intersects(COLLIDER.getBoundsInParent())) {
                         String type = obstacle.getType();
+                        soundManager.playSoundEffect(obstacle.soundPath);
 
                         if (Objects.equals(type, "Score")) {
                             currentScore += obstacle.getAdditionalScore();
@@ -203,6 +208,10 @@ public class ObstacleManager {
         if (currentScore > gameManager.getHighScore())
             gameManager.setHighScore(currentScore);
         gameManager.saveGame();
+
+        Random random = new Random();
+        int randomGameOverSound = random.nextInt(0, gameOverSounds.length);
+        soundManager.playSoundEffect(gameOverSounds[randomGameOverSound]);
 
         Text gameOverText = new Text("Game Over!");
         gameOverText.setStyle("-fx-font-size: 80;");
