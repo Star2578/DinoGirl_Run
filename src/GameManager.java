@@ -220,6 +220,10 @@ public class GameManager {
             // Load settings from properties
             setScreenWidth(Integer.parseInt(settingProperties.getProperty("screenWidth", "1280")));
             setScreenHeight(Integer.parseInt(settingProperties.getProperty("screenHeight", "720")));
+            setBackgroundMusicSlider(Float.parseFloat(settingProperties.getProperty("backgroundMusicSlider", "50")));
+            setBackgroundMusicVolume(Float.parseFloat(settingProperties.getProperty("backgroundMusicVolume", String.valueOf(MID_DECIBEL))));
+            setSoundEffectSlider(Float.parseFloat(settingProperties.getProperty("soundEffectSlider", "50")));
+            setSoundEffectVolume(Float.parseFloat(settingProperties.getProperty("soundEffectVolume", String.valueOf(MID_DECIBEL))));
             // Load other settings...
 
         } catch (IOException ignored) {
@@ -232,6 +236,10 @@ public class GameManager {
             // Save settings to properties
             settingProperties.setProperty("screenWidth", String.valueOf(getScreenWidth()));
             settingProperties.setProperty("screenHeight", String.valueOf(getScreenHeight()));
+            settingProperties.setProperty("backgroundMusicVolume", String.valueOf(getBackgroundMusicVolume()));
+            settingProperties.setProperty("backgroundMusicSlider", String.valueOf(getBackgroundMusicSlider()));
+            settingProperties.setProperty("soundEffectVolume", String.valueOf(getSoundEffectVolume()));
+            settingProperties.setProperty("soundEffectSlider", String.valueOf(getSoundEffectSlider()));
             // Save other settings...
 
             settingProperties.store(output, "Game Settings");
