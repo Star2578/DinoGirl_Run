@@ -20,16 +20,16 @@ public class Sans extends Obstacle {
     }
 
     @Override
-    public void obstacleInfo() {
+    public void isSpawned() {
         Missed = false;
         defaultGround = 100;
         defaultAir = 0;
-        super.obstacleInfo();
+        super.isSpawned();
         setTextureFromPath("Sprites/Secret/Sans.png");
     }
 
     @Override
-    public void behavior(StackPane root, ImageView obstacle) {
+    public void trapActivated(StackPane root, ImageView obstacle) {
         if (Missed) return;
 
         Text missText = new Text("Miss");

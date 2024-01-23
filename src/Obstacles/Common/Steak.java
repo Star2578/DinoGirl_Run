@@ -13,8 +13,8 @@ public class Steak extends Obstacle {
     }
 
     @Override
-    public void obstacleInfo() {
-        super.obstacleInfo();
+    public void isSpawned() {
+        super.isSpawned();
         soundPath = randomSFX(new String[]{"src/Sounds/Retro PickUp 10.wav", "src/Sounds/Retro PickUp 18.wav"});
     }
 }

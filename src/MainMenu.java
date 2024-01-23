@@ -32,7 +32,7 @@ public class MainMenu extends Application {
         primaryStage.setMaximized(false); // Disable maximizing
 
         // Play background music
-        soundManager.playBackgroundMusic("src/Sounds/Minecraft.wav");
+        soundManager.playBackgroundMusic(soundManager.backgroundMusicPath);
 
         StackPane root = new StackPane();
 
@@ -82,7 +82,7 @@ public class MainMenu extends Application {
         // Start the Game
         start.setOnAction(actionEvent -> {
             System.out.println("Starting!");
-            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
+            soundManager.playSoundEffect(soundManager.clickingSound);
             MainGame game = new MainGame();
             game.start(primaryStage);
         });
@@ -91,7 +91,7 @@ public class MainMenu extends Application {
         option.setOnAction(actionEvent -> {
             System.out.println("Option");
             Scene setting = gameManager.setting(primaryStage, gameManager.getMainMenuScene());
-            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
+            soundManager.playSoundEffect(soundManager.clickingSound);
 
             primaryStage.setScene(setting);
         });
@@ -99,7 +99,7 @@ public class MainMenu extends Application {
         // Quit
         quit.setOnAction(actionEvent -> {
             System.out.println("Quit");
-            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
+            soundManager.playSoundEffect(soundManager.clickingSound);
             gameManager.saveGame();
             Stage stage = (Stage) quit.getScene().getWindow();
             stage.close();

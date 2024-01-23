@@ -29,10 +29,6 @@ public class ObstacleManager {
     private final int SCREEN_HEIGHT;
     private Timeline timeline;
     private double obstacleSpeed = 5.0; // Initial obstacle speed
-    private final String[] gameOverSounds = {
-      "src/Sounds/Hurt/hurt_001.wav", "src/Sounds/Hurt/hurt_002.wav", "src/Sounds/Hurt/hurt_003.wav",
-      "src/Sounds/Hurt/hurt_004.wav", "src/Sounds/Hurt/hurt_005.wav"
-    };
     private final int[] THRESHOLDS = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
     private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
     private final Obstacle[] legendaryObstacles = {
@@ -130,7 +126,7 @@ public class ObstacleManager {
 
     public void startObstacleAnimation(Obstacle obstacle) {
         ImageView obstacleTexture = obstacle.getTexture();
-        obstacle.obstacleInfo();
+        obstacle.isSpawned();
         double spawnPointY = obstacle.spawnPoint;
 
         ROOT.getChildren().add(obstacleTexture);
@@ -167,7 +163,7 @@ public class ObstacleManager {
                         }
 
                         if (Objects.equals(type, "Trap")) {
-                            obstacle.behavior(ROOT, obstacleTexture);
+                            obstacle.trapActivated(ROOT, obstacleTexture);
                         }
                     }
 
@@ -210,8 +206,8 @@ public class ObstacleManager {
         gameManager.saveGame();
 
         Random random = new Random();
-        int randomGameOverSound = random.nextInt(0, gameOverSounds.length);
-        soundManager.playSoundEffect(gameOverSounds[randomGameOverSound]);
+        int randomGameOverSound = random.nextInt(0, soundManager.gameOverSounds.length);
+        soundManager.playSoundEffect(soundManager.gameOverSounds[randomGameOverSound]);
 
         Text gameOverText = new Text("Game Over!");
         gameOverText.setStyle("-fx-font-size: 80;");
@@ -238,7 +234,7 @@ public class ObstacleManager {
         restart.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             // Check if the event was triggered by a primary mouse click
             if (event.getButton() == MouseButton.PRIMARY) {
-                soundManager.playSoundEffect("src/Sounds/Clicking.wav");
+                soundManager.playSoundEffect(soundManager.clickingSound);
                 gameManager.setGameOverStatus(false);
                 ROOT.getChildren().remove(gameOverLayout);
                 currentScore = 0;

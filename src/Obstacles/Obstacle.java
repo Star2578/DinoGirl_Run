@@ -51,9 +51,8 @@ public class Obstacle {
     public double getDefaultAir() { return defaultAir; }
     public double getDefaultGround() { return defaultGround; }
 
-    public void obstacleInfo() {
-        // for override
-        // use for setup some random spawn point
+    public void isSpawned() {
+        // will called when this obstacle spawn
         Random random = new Random();
         int dif = random.nextInt(0, 50);
         if (dif <= 25) {
@@ -63,20 +62,8 @@ public class Obstacle {
         }
     }
 
-    public void behavior(StackPane root, ImageView obstacle) {
-        // for override
-    }
-
-    public Obstacle clone() {
-        Obstacle newObstacle = new Obstacle();
-        newObstacle.setName(this.getName());
-        newObstacle.setTexture(this.getTexture());
-        newObstacle.setType(this.getType());
-        newObstacle.setHeight(this.getHeight());
-        newObstacle.setWidth(this.getWidth());
-        newObstacle.setAdditionalScore(this.getAdditionalScore());
-        newObstacle.setDefaultGround(this.getDefaultGround());
-        return newObstacle;
+    public void trapActivated(StackPane root, ImageView obstacle) {
+        // will called when this obstacle got hit
     }
 
     public String randomSFX(String[] choices) {

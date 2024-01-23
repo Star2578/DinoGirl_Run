@@ -13,9 +13,9 @@ public class David extends Obstacle {
     }
 
     @Override
-    public void obstacleInfo() {
+    public void isSpawned() {
         defaultGround = 120;
         defaultAir = 40;
-        super.obstacleInfo();
+        super.isSpawned();
     }
 }

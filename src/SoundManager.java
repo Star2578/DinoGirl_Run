@@ -10,6 +10,14 @@ public class SoundManager {
     private AudioInputStream audioInputStream;
     private Clip backgroundMusic;
     private Thread backgroundMusicThread;
+    public final String[] gameOverSounds = {
+            "src/Sounds/Hurt/hurt_001.wav", "src/Sounds/Hurt/hurt_002.wav", "src/Sounds/Hurt/hurt_003.wav",
+            "src/Sounds/Hurt/hurt_004.wav", "src/Sounds/Hurt/hurt_005.wav"
+    };
+
+    public final String clickingSound = "src/Sounds/Clicking.wav";
+    public final String jumpingSound = "src/Sounds/Jump.wav";
+    public String backgroundMusicPath = "src/Sounds/Minecraft.wav";
 
     private SoundManager() {
         gameManager.initialize(this);

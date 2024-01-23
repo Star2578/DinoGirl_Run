@@ -166,19 +166,19 @@ public class MainGame {
 
         toMenu.setOnAction(actionEvent -> {
             System.out.println("To Menu(Paused)");
-            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
+            soundManager.playSoundEffect(soundManager.clickingSound);
             primaryStage.setScene(gameManager.getMainMenuScene());
         });
 
         option.setOnAction(actionEvent -> {
             System.out.println("Option(Paused)");
-            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
+            soundManager.playSoundEffect(soundManager.clickingSound);
             primaryStage.setScene(gameManager.setting(primaryStage, gameScene));
         });
 
         quit.setOnAction(actionEvent -> {
             System.out.println("Quit(Paused)");
-            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
+            soundManager.playSoundEffect(soundManager.clickingSound);
             Stage stage = (Stage) quit.getScene().getWindow();
             stage.close();
         });
@@ -315,7 +315,7 @@ public class MainGame {
             case SPACE:
             case UP:
                 if (!isJumping) {
-                    soundManager.playSoundEffect("src/Sounds/Jump.wav");
+                    soundManager.playSoundEffect(soundManager.jumpingSound);
                     yVelocity = JUMP_STRENGTH;
                     isJumping = true;
                 }

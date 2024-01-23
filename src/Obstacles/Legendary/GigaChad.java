@@ -13,7 +13,7 @@ public class GigaChad extends Obstacle {
     }
 
     @Override
-    public void obstacleInfo() {
+    public void isSpawned() {
         spawnPoint = 72;
     }
 }

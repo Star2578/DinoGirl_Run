@@ -206,7 +206,7 @@ public class GameManager {
         // Handle action for the "Back" button to return to the main menu
         backButton.setOnAction(e -> {
             saveSettings();
-            soundManager.playSoundEffect("src/Sounds/Clicking.wav");
+            soundManager.playSoundEffect(soundManager.clickingSound);
             stage.setScene(previousScene); // Return to the previous scene
         });
 

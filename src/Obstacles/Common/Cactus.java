@@ -13,7 +13,7 @@ public class Cactus extends Obstacle {
     }
 
     @Override
-    public void obstacleInfo() {
+    public void isSpawned() {
         spawnPoint = defaultGround;
     }
 }
