@@ -3,6 +3,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import java.io.File;
+import java.util.Random;
 
 public class SoundManager {
     private static SoundManager instance;
@@ -120,5 +121,14 @@ public class SoundManager {
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(volume);
         }
+    }
+
+    public String randomSFX(String[] choices) {
+        String sfx;
+        Random random = new Random();
+        int choose = random.nextInt(0, choices.length);
+        sfx = choices[choose];
+
+        return sfx;
     }
 }

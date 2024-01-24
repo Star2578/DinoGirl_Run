@@ -65,13 +65,4 @@ public class Obstacle {
     public void trapActivated(StackPane root, ImageView obstacle) {
         // will called when this obstacle got hit
     }
-
-    public String randomSFX(String[] choices) {
-        String sfx;
-        Random random = new Random();
-        int choose = random.nextInt(0, choices.length);
-        sfx = choices[choose];
-
-        return sfx;
-    }
 }

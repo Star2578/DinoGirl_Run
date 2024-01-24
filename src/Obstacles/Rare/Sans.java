@@ -9,7 +9,6 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Sans extends Obstacle {
-
     boolean Missed = false;
     public Sans() {
         name = "Obstacles.Rare.Sans";
@@ -24,6 +23,7 @@ public class Sans extends Obstacle {
         Missed = false;
         defaultGround = 100;
         defaultAir = 0;
+        soundPath = "src/Sounds/Sans_SFX.wav";
         super.isSpawned();
         setTextureFromPath("Sprites/Secret/Sans.png");
     }

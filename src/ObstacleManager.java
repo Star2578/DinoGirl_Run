@@ -143,7 +143,6 @@ public class ObstacleManager {
                     // Check for collision with the Dino girl
                     if (obstacleTexture.getBoundsInParent().intersects(COLLIDER.getBoundsInParent())) {
                         String type = obstacle.getType();
-                        soundManager.playSoundEffect(obstacle.soundPath);
 
                         if (Objects.equals(type, "Score")) {
                             currentScore += obstacle.getAdditionalScore();
@@ -163,6 +162,11 @@ public class ObstacleManager {
                         }
 
                         if (Objects.equals(type, "Trap")) {
+                            boolean once = false;
+                            if (!once) {
+                                soundManager.playSoundEffect(obstacle.soundPath);
+                                once = true;
+                            }
                             obstacle.trapActivated(ROOT, obstacleTexture);
                         }
                     }
@@ -256,6 +260,9 @@ public class ObstacleManager {
     // Display a score message for a brief moment
     private void displayScoreMessage(int additionalScore, double posX, double posY) {
         if (additionalScore >= 0) {
+            soundManager.playSoundEffect(soundManager.randomSFX(new String[]{
+                    "src/Sounds/Retro PickUp 10.wav", "src/Sounds/Retro PickUp 18.wav"
+            }));
             Text scoreMessage = new Text("+" + additionalScore);
             scoreMessage.setStyle("-fx-font-size: 30; -fx-fill: #26ff00; -fx-font-weight: bold;");
 
@@ -273,6 +280,9 @@ public class ObstacleManager {
             );
             scoreMessageTimeline.play();
         } else {
+            soundManager.playSoundEffect(soundManager.randomSFX(new String[] {
+                    "src/Sounds/Alarm/Alarm_03.wav", "src/Sounds/Alarm/Alarm_44.wav", "src/Sounds/Alarm/Alarm_47.wav"
+            }));
             Text scoreMessage = new Text("" + additionalScore);
             scoreMessage.setStyle("-fx-font-size: 30; -fx-fill: #ff0000; -fx-font-weight: bold;");
 
