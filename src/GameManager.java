@@ -16,7 +16,7 @@ import java.util.Properties;
 public class GameManager {
     private static GameManager instance;
     private SoundManager soundManager;
-    public final double version = 0.2;
+    public final double version = 1.0;
     private int screenWidth;
     private int screenHeight;
     private boolean isGameOver = false;

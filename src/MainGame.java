@@ -1,7 +1,4 @@
-import javafx.animation.AnimationTimer;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -36,9 +33,16 @@ public class MainGame {
     private double groundPos;
     private boolean isMoveLeft = false;
     private boolean isMoveRight = false;
+    private int screenWidth;
+    private int screenHeight;
+    private VBox groundContainer = new VBox();
+    private HBox grassContainer = new HBox();
 
     public void start(Stage primaryStage) {
         StackPane root = new StackPane();
+
+        screenWidth = gameManager.getScreenWidth();
+        screenHeight = gameManager.getScreenHeight();
 
         primaryStage.setResizable(false); // Set window non-resizable
         primaryStage.setMaximized(false); // Disable maximizing
@@ -47,46 +51,11 @@ public class MainGame {
         Text scoreText = new Text("00000000");
         scoreText.setFill(Color.BLACK);
         scoreText.setStyle("-fx-font-size: 20;");
-        scoreText.setTranslateX((double) -gameManager.getScreenWidth() / 2 + 50); // Adjust X position as needed
-        scoreText.setTranslateY((double) -gameManager.getScreenHeight() / 2 + 40); // Adjust Y position as needed
+        updateScoreTextPos(scoreText);
         root.getChildren().add(scoreText);
 
         // Create Ground Texture
-        VBox groundContainer = new VBox();
-        HBox grassContainer = new HBox();
-        grassContainer.setSpacing(-1);
-        int size = 50;
-
-        for (int i = 0; i <= gameManager.getScreenWidth() / size; i++) {
-            ImageView grass = new ImageView("Sprites/Map/Grass_Block.jpg");
-            grass.setFitHeight(size);
-            grass.setFitWidth(size);
-            grass.setPreserveRatio(true);
-            grassContainer.getChildren().add(grass);
-        }
-        groundContainer.getChildren().add(grassContainer);
-        for (int j = 0; j < gameManager.getScreenHeight() / (size * 4); j++) {
-            HBox dirtContainer = new HBox();
-            dirtContainer.setSpacing(-1);
-
-            for (int i = 0; i <= gameManager.getScreenWidth() / size; i++) {
-                ImageView dirt = new ImageView("Sprites/Map/Dirt_Block.png");
-                dirt.setFitWidth(size);
-                dirt.setFitHeight(size);
-                dirt.setPreserveRatio(true);
-                dirtContainer.getChildren().add(dirt);
-            }
-            groundContainer.getChildren().add(dirtContainer);
-        }
-
-        root.getChildren().add(groundContainer);
-        groundContainer.setAlignment(Pos.CENTER);
-        groundContainer.setSpacing(-1);
-        if (gameManager.getScreenHeight() > 720 || gameManager.getScreenWidth() > 1280) {
-            groundContainer.setTranslateY(295);
-        } else {
-            groundContainer.setTranslateY(270);
-        }
+        generateGroundTexture(root);
 
         // Create and add the T-Rex character (you'll need to provide the image path)
         ImageView dinoGirlView = new ImageView(new Image("Sprites/Player/Dino.png"));
@@ -192,6 +161,22 @@ public class MainGame {
 
         root.getChildren().add(pauseOverlay);
 
+        // Additional AnimationTimer for continuous updates
+        AnimationTimer updateTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (gameManager.getScreenWidth() != screenWidth || gameManager.getScreenHeight() != screenHeight) {
+                    updateGameElements(root);
+                    updateScoreTextPos(scoreText);
+                    screenWidth = gameManager.getScreenWidth();
+                    screenHeight = gameManager.getScreenHeight();
+                    dinoGirlView.toFront();
+                    pauseOverlay.toFront();
+                }
+            }
+        };
+        updateTimer.start();
+
         // Handle input actions
         gameScene.setOnKeyPressed(event -> {
             handleMovementAndJumping(event.getCode());
@@ -203,6 +188,7 @@ public class MainGame {
 
             // Pause
             if (event.getCode() == KeyCode.ESCAPE) {
+                pauseOverlay.toFront();
                 if (!gameManager.getPauseStatus()) {
                     gameLoop.stop(); // Pause the game loop
                     gameManager.setPauseStatus(true);
@@ -299,6 +285,59 @@ public class MainGame {
         primaryStage.setScene(gameScene);
         primaryStage.setTitle("Dino Girl Game");
         primaryStage.show();
+    }
+
+    private void updateScoreTextPos(Text scoreText) {
+        scoreText.setTranslateX((double) -gameManager.getScreenWidth() / 2 + 50); // Adjust X position as needed
+        scoreText.setTranslateY((double) -gameManager.getScreenHeight() / 2 + 40); // Adjust Y position as needed
+    }
+
+    private void updateGameElements(StackPane root) {
+        // Update ground texture based on screen size
+        root.getChildren().remove(grassContainer);
+        root.getChildren().remove(groundContainer);
+
+        generateGroundTexture(root);
+
+        // Other elements to update based on screen size...
+    }
+
+    private void generateGroundTexture(StackPane root) {
+        groundContainer = new VBox();
+        grassContainer = new HBox();
+        grassContainer.setSpacing(-1);
+        int size = 50;
+
+        for (int i = 0; i <= gameManager.getScreenWidth() / size; i++) {
+            ImageView grass = new ImageView("Sprites/Map/Grass_Block.jpg");
+            grass.setFitHeight(size);
+            grass.setFitWidth(size);
+            grass.setPreserveRatio(true);
+            grassContainer.getChildren().add(grass);
+        }
+        groundContainer.getChildren().add(grassContainer);
+        for (int j = 0; j < gameManager.getScreenHeight() / (size * 4); j++) {
+            HBox dirtContainer = new HBox();
+            dirtContainer.setSpacing(-1);
+
+            for (int i = 0; i <= gameManager.getScreenWidth() / size; i++) {
+                ImageView dirt = new ImageView("Sprites/Map/Dirt_Block.png");
+                dirt.setFitWidth(size);
+                dirt.setFitHeight(size);
+                dirt.setPreserveRatio(true);
+                dirtContainer.getChildren().add(dirt);
+            }
+            groundContainer.getChildren().add(dirtContainer);
+        }
+
+        root.getChildren().add(groundContainer);
+        groundContainer.setAlignment(Pos.CENTER);
+        groundContainer.setSpacing(-1);
+        if (gameManager.getScreenHeight() > 720 || gameManager.getScreenWidth() > 1280) {
+            groundContainer.setTranslateY(295);
+        } else {
+            groundContainer.setTranslateY(270);
+        }
     }
 
     private void handleMovementAndJumping(KeyCode keyCode) {

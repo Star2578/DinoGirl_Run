@@ -17,7 +17,7 @@ public class SoundManager {
 
     public final String clickingSound = "src/Sounds/Clicking.wav";
     public final String jumpingSound = "src/Sounds/Jump.wav";
-    public String backgroundMusicPath = "src/Sounds/Minecraft.wav";
+    public String backgroundMusicPath = "src/Sounds/Ludum Dare 30 - Track 4.wav";
 
     private SoundManager() {
         gameManager.initialize(this);
