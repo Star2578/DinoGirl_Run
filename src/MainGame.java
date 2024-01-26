@@ -129,6 +129,9 @@ public class MainGame {
         Button toMenu = new Button("To Main Menu");
         Button option = new Button("Option");
         Button quit = new Button("Quit");
+        toMenu.getStyleClass().add("menu-button-2");
+        option.getStyleClass().add("menu-button-2");
+        quit.getStyleClass().add("menu-button-2");
         VBox pauseContainer = new VBox(pausedText, toMenu, option, quit);
         pauseContainer.setAlignment(Pos.CENTER);
         pauseContainer.setSpacing(10);
@@ -281,6 +284,8 @@ public class MainGame {
 
         // Start the game loop
         gameLoop.start();
+
+        gameScene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         primaryStage.setScene(gameScene);
         primaryStage.setTitle("Dino Girl Game");

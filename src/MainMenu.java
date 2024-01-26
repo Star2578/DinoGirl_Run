@@ -35,7 +35,6 @@ public class MainMenu extends Application {
         soundManager.playBackgroundMusic(soundManager.backgroundMusicPath);
 
         StackPane root = new StackPane();
-
         // Components that would be in the scene
         Text version = new Text("v" + gameManager.version);
         VBox versionContainer = new VBox(version);
@@ -53,7 +52,7 @@ public class MainMenu extends Application {
 
         VBox highScoreContainer = new VBox();
         Text highScore = new Text("High Score: " + gameManager.getHighScore());
-        highScore.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 20;");
+        highScore.getStyleClass().add("high-score-text");
         highScoreContainer.getChildren().add(highScore);
         highScoreContainer.setAlignment(Pos.TOP_RIGHT);
         highScoreContainer.setPadding(new Insets(20));
@@ -61,6 +60,9 @@ public class MainMenu extends Application {
         Button start = new Button("Start");
         Button option = new Button("Option");
         Button quit = new Button("Quit");
+        start.getStyleClass().add("menu-button-1");
+        option.getStyleClass().add("menu-button-1");
+        quit.getStyleClass().add("menu-button-1");
         VBox buttonContainer = new VBox(start, option, quit);
         buttonContainer.setAlignment(Pos.BOTTOM_LEFT);
         buttonContainer.setSpacing(20);
@@ -105,7 +107,7 @@ public class MainMenu extends Application {
             stage.close();
         });
 
-        menuScene.getRoot().setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size:16;");
+        menuScene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         primaryStage.show();
     }
 

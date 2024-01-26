@@ -207,6 +207,7 @@ public class ObstacleManager {
     public void displayGameOver(ImageView deleteMe) {
         if (currentScore > gameManager.getHighScore())
             gameManager.setHighScore(currentScore);
+        gameManager.setDeathCount(gameManager.getDeathCount() + 1);
         gameManager.saveGame();
 
         Random random = new Random();
@@ -215,6 +216,9 @@ public class ObstacleManager {
 
         Text gameOverText = new Text("Game Over!");
         gameOverText.setStyle("-fx-font-size: 80;");
+
+        Text deathCountText = new Text("\uD83D\uDC80 " + gameManager.getDeathCount());
+        deathCountText.setStyle("-fx-font-size: 40;");
 
         Text scoreText = new Text("Your Score is " + currentScore);
         scoreText.setStyle("-fx-font-size: 40;");
@@ -225,7 +229,7 @@ public class ObstacleManager {
         gameOverLayout.setAlignment(Pos.CENTER); // Center align the VBox content
 
         // Add the "Game Over" text and the restart button to the VBox
-        gameOverLayout.getChildren().addAll(gameOverText, scoreText, restart);
+        gameOverLayout.getChildren().addAll(gameOverText, deathCountText, scoreText, restart);
 
         // Set the alignment of the VBox within the StackPane
         StackPane.setAlignment(gameOverLayout, Pos.CENTER);

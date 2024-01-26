@@ -36,7 +36,18 @@ public class GameManager {
 
     // Game Progression to be save
     private int highScore = 0;
+    private int deathCount = 0;
+    private int foodCount = 0;
     // Dino Girl's skins
+    public boolean dino_cool = false;
+    public boolean dino_deer_eat_meat = false;
+    public boolean dino_emiya = false;
+    public boolean dino_gaming = false;
+    public boolean dino_joji = false;
+    public boolean dino_martinez = false;
+    public boolean dino_sans = false;
+    public boolean dino_space = false;
+    public boolean dino_spartan = false;
     // Achievements
 
     public GameManager() {
@@ -101,6 +112,9 @@ public class GameManager {
     public float getSoundEffectSlider() { return soundEffectSlider; }
     public void setSoundEffectSlider(float soundEffectSlider) { this.soundEffectSlider = soundEffectSlider; }
 
+    public int getDeathCount() { return deathCount; }
+    public void setDeathCount(int deathCount) { this.deathCount = deathCount; }
+
     // Mapping function to convert slider values to decibel range
     private float mapToDecibelRange(float sliderValue) {
         // Assuming the slider value ranges from 0 to 100
@@ -113,6 +127,7 @@ public class GameManager {
     public Scene setting(Stage stage, Scene previousScene) {
         // Create UI elements for the settings scene
         Button backButton = new Button("Back");
+        backButton.getStyleClass().add("menu-button-2");
         VBox settingsRoot = new VBox();
         settingsRoot.setAlignment(Pos.TOP_RIGHT);
 
@@ -195,13 +210,11 @@ public class GameManager {
         settingsContainer.setPadding(new Insets(40));
 
         // Add labels and components to the settingsRoot VBox
-        settingsRoot.getChildren().addAll(
-                backButton,
-                settingsContainer
-        );
+        settingsRoot.getChildren().addAll(backButton, settingsContainer);
 
         // Create a new scene for settings
         Scene settingsScene = SceneManager.createScene(settingsRoot);
+        settingsScene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         // Handle action for the "Back" button to return to the main menu
         backButton.setOnAction(e -> {
@@ -255,6 +268,16 @@ public class GameManager {
         try (OutputStream output = new FileOutputStream("config.progression")) {
             // Save settings to properties
             gameProperties.setProperty("HighScore", String.valueOf(highScore));
+            gameProperties.setProperty("DeathCount", String.valueOf(deathCount));
+            gameProperties.setProperty("Skin_Dino_Cool", String.valueOf(dino_cool));
+            gameProperties.setProperty("Skin_Dino_Deer_Eat_Meat", String.valueOf(dino_deer_eat_meat));
+            gameProperties.setProperty("Skin_Dino_Emiya", String.valueOf(dino_emiya));
+            gameProperties.setProperty("Skin_Dino_Gaming", String.valueOf(dino_gaming));
+            gameProperties.setProperty("Skin_Dino_Joji", String.valueOf(dino_joji));
+            gameProperties.setProperty("Skin_Dino_Martinez", String.valueOf(dino_martinez));
+            gameProperties.setProperty("Skin_Dino_Sans", String.valueOf(dino_sans));
+            gameProperties.setProperty("Skin_Dino_Space", String.valueOf(dino_space));
+            gameProperties.setProperty("Skin_Dino_Spartan", String.valueOf(dino_spartan));
 
             gameProperties.store(output, "Game Progression");
 
@@ -270,6 +293,17 @@ public class GameManager {
 
             // Load settings from properties
             setHighScore(Integer.parseInt(gameProperties.getProperty("HighScore", "0")));
+            setDeathCount(Integer.parseInt(gameProperties.getProperty("DeathCount", "0")));
+
+            dino_cool = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Cool", "false"));
+            dino_deer_eat_meat = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Deer_Eat_Meat", "false"));
+            dino_emiya = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Emiya", "false"));
+            dino_gaming = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Gaming", "false"));
+            dino_joji = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Joji", "false"));
+            dino_martinez = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Martinez", "false"));
+            dino_sans = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Sans", "false"));
+            dino_space = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Space", "false"));
+            dino_spartan = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Spartan", "false"));
 
 
         } catch (IOException e) {
