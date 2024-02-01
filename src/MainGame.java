@@ -58,7 +58,7 @@ public class MainGame {
         generateGroundTexture(root);
 
         // Create and add the T-Rex character (you'll need to provide the image path)
-        ImageView dinoGirlView = new ImageView(new Image("Sprites/Player/Dino.png"));
+        ImageView dinoGirlView = new ImageView(gameManager.changeSkin());
         double maxWidth = 150; // Set the maximum width (adjust as needed)
         double maxHeight = 150; // Set the maximum height (adjust as needed)
 

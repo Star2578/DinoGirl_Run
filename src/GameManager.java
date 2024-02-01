@@ -2,43 +2,51 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class GameManager {
+    private static final float MIN_DECIBEL = -30.0f;
+    private static final float MAX_DECIBEL = 6.0f;
+    private static final float MID_DECIBEL = (MAX_DECIBEL + MIN_DECIBEL) / 2;
+
+    private static final String CONFIG_FILE_PATH = "config.properties";
+    private static final String PROGRESSION_FILE_PATH = "config.progression";
+
     private static GameManager instance;
     private SoundManager soundManager;
-    public final double version = 1.0;
+    private Properties settingProperties;
+    private Properties gameProperties;
+
     private int screenWidth;
     private int screenHeight;
     private boolean isGameOver = false;
     private boolean isPause = false;
-    private Properties settingProperties;
-    private Properties gameProperties;
     private Scene mainMenuScene;
-
-    private static final float MIN_DECIBEL = -30.0f;
-    private static final float MAX_DECIBEL = 6.0f;
-    private static final float MID_DECIBEL = (MAX_DECIBEL + MIN_DECIBEL) / 2;
 
     private float soundEffectVolume = MID_DECIBEL;
     private float soundEffectSlider = 50.0f;
     private float backgroundMusicVolume = MID_DECIBEL;
     private float backgroundMusicSlider = 50.0f;
 
-    // Game Progression to be save
     private int highScore = 0;
     private int deathCount = 0;
-    private int foodCount = 0;
+
+    public String version = "1.1";
+
     // Dino Girl's skins
+    private String currentSkin;
     public boolean dino_cool = false;
     public boolean dino_deer_eat_meat = false;
     public boolean dino_emiya = false;
@@ -48,10 +56,12 @@ public class GameManager {
     public boolean dino_sans = false;
     public boolean dino_space = false;
     public boolean dino_spartan = false;
+    private boolean[] unlockedSkins;
     // Achievements
 
     public GameManager() {
         // default values
+        currentSkin = "Sprites/Player/Dino_Default.png";
         screenWidth = 1280;
         screenHeight = 720;
 
@@ -309,5 +319,123 @@ public class GameManager {
         } catch (IOException e) {
             System.out.println("Error when loading game progression:" + e.getMessage());
         }
+    }
+
+    public Image changeSkin() {
+        return new Image(currentSkin);
+    }
+
+//    public Scene AchievementMenu(Stage stage, Scene previousScene) {
+//        Scene achievementScene;
+//
+//        return achievementScene;
+//    }
+
+    private void loadUnlockedSkins() {
+        // Load unlocked skins logic here
+        // For simplicity, assuming the length of unlockedSkins array is same as number of skins
+        unlockedSkins = new boolean[]{
+                true, dino_cool, dino_deer_eat_meat, dino_emiya, dino_gaming, dino_joji, dino_martinez, dino_sans,
+                dino_space, dino_spartan
+        };
+    }
+
+    public Scene SkinMenu(Stage stage, Scene previousScene) {
+        ScrollPane skinMenuScrollPane = new ScrollPane();
+        skinMenuScrollPane.setFitToHeight(true);
+        skinMenuScrollPane.setFitToWidth(true);
+
+        TilePane skinMenuRoot = new TilePane();
+        skinMenuRoot.setPrefColumns(4);
+        skinMenuRoot.setHgap(20);
+        skinMenuRoot.setVgap(20);
+        skinMenuRoot.setAlignment(Pos.CENTER);
+
+        loadUnlockedSkins();  // Load unlocked skins here
+
+        List<HBox> skinCards = createSkinCards();
+
+        skinMenuRoot.getChildren().addAll(skinCards);
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> stage.setScene(previousScene));
+
+        VBox skinMenuVBox = new VBox(skinMenuRoot, backButton);
+        skinMenuVBox.setAlignment(Pos.CENTER);
+
+        skinMenuVBox.setStyle("-fx-background-color: #32a852;"); // Adjust Background Color
+        skinMenuScrollPane.setContent(skinMenuVBox);
+
+        Scene skinMenuScene = new Scene(skinMenuScrollPane, getScreenWidth(), getScreenHeight());
+        skinMenuScene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+
+
+        return skinMenuScene;
+    }
+
+    private List<HBox> createSkinCards() {
+        String[] skinNames = {"Default", "Cool", "Deer", "Emiya", "Gaming", "Joji", "Martinez", "Sans", "Space", "Spartan"};
+        Image[] skinImages = loadSkinImages(skinNames);
+        String[] skinDescriptions = {"Default Description", "Cool Description", "Deer Description", "Emiya Description", "Gaming Description",
+                "Joji Description", "Martinez Description", "Sans Description", "Space Description", "Spartan Description"};
+
+        List<HBox> skinCards = new ArrayList<>();
+
+        for (int i = 0; i < skinImages.length; i++) {
+            if (unlockedSkins[i]) {
+                HBox skinCard = createSkinCard(skinNames[i], skinDescriptions[i], skinImages[i], i);
+                skinCards.add(skinCard);
+            }
+        }
+
+        return skinCards;
+    }
+
+    private Image[] loadSkinImages(String[] names) {
+        // Assuming you have images for each skin, you can replace these with your own paths
+        Image[] skinImages = new Image[names.length];
+        for (int i = 0; i < 10; i++) {
+            String imagePath = "Sprites/Player/Dino_" + names[i] + ".png";
+            skinImages[i] = new Image(imagePath);
+        }
+        return skinImages;
+    }
+
+    private HBox createSkinCard(String skinName, String description, Image skinImage, int skinIndex) {
+        HBox skinCard = new HBox();
+        skinCard.setAlignment(Pos.CENTER);
+        skinCard.setSpacing(10);
+
+        ImageView imageView = new ImageView(skinImage);
+        imageView.setFitWidth(150);
+        imageView.setFitHeight(150);
+
+        VBox skinInfo = new VBox();
+        skinInfo.setAlignment(Pos.CENTER_LEFT);
+
+        Label skinNameLabel = new Label(skinName);
+        Label descriptionLabel = new Label(description);
+
+        Button changeSkinButton = new Button("Change Skin");
+        changeSkinButton.setOnAction(e -> {
+            // Implement skin changing logic here
+            if (unlockedSkins[skinIndex]) {
+                setCurrentSkin(skinIndex);
+                saveGame();  // Save the current skin
+                System.out.println("Changing to " + skinName);
+            } else {
+                System.out.println("Skin locked: " + skinName);
+            }
+        });
+
+        skinInfo.getChildren().addAll(skinNameLabel, descriptionLabel);
+        skinCard.getChildren().addAll(imageView, skinInfo, changeSkinButton);
+
+        return skinCard;
+    }
+
+    private void setCurrentSkin(int skinIndex) {
+        // Assuming skin paths follow a specific pattern
+        currentSkin = "Sprites/Player/Dino_" + (skinIndex + 1) + ".png";
     }
 }

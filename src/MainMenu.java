@@ -59,11 +59,15 @@ public class MainMenu extends Application {
 
         Button start = new Button("Start");
         Button option = new Button("Option");
+        Button skin = new Button("Skins");
+        Button achievement = new Button("Achievements");
         Button quit = new Button("Quit");
         start.getStyleClass().add("menu-button-1");
         option.getStyleClass().add("menu-button-1");
+        skin.getStyleClass().add("menu-button-1");
+        achievement.getStyleClass().add("menu-button-1");
         quit.getStyleClass().add("menu-button-1");
-        VBox buttonContainer = new VBox(start, option, quit);
+        VBox buttonContainer = new VBox(start, option, skin, achievement, quit);
         buttonContainer.setAlignment(Pos.BOTTOM_LEFT);
         buttonContainer.setSpacing(20);
         buttonContainer.setPadding(new Insets(20));
@@ -96,6 +100,14 @@ public class MainMenu extends Application {
             soundManager.playSoundEffect(soundManager.clickingSound);
 
             primaryStage.setScene(setting);
+        });
+
+        skin.setOnAction(actionEvent -> {
+            System.out.println("Skins");
+            Scene skinMenu = gameManager.SkinMenu(primaryStage, gameManager.getMainMenuScene());
+            soundManager.playSoundEffect(soundManager.clickingSound);
+
+            primaryStage.setScene(skinMenu);
         });
 
         // Quit
