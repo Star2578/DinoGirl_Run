@@ -18,4 +18,9 @@ public class David extends Obstacle {
         defaultAir = 40;
         super.isSpawned();
     }
+
+    @Override
+    public David cloneObstacle() {
+        return new David();
+    }
 }

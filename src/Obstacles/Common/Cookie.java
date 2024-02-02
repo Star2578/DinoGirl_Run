@@ -16,4 +16,9 @@ public class Cookie extends Obstacle {
     public void isSpawned() {
         super.isSpawned();
     }
+
+    @Override
+    public Cookie cloneObstacle() {
+        return new Cookie();
+    }
 }

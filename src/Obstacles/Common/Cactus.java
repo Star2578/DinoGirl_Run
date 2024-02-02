@@ -16,4 +16,9 @@ public class Cactus extends Obstacle {
     public void isSpawned() {
         spawnPoint = defaultGround;
     }
+
+    @Override
+    public Cactus cloneObstacle() {
+        return new Cactus();
+    }
 }

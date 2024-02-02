@@ -28,11 +28,11 @@ public class ObstacleManager {
     private final int SCREEN_HEIGHT;
 
     private Timeline timeline;
-    private double obstacleSpeed = 5.0; // Initial obstacle speed
+    private double obstacleSpeed = 3.0; // Initial obstacle speed
 
     private final StackPane ROOT;
     private final Shape COLLIDER;
-    private final int[] THRESHOLDS = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
+    private final int[] THRESHOLDS = {0, 5000, 10000, 25000, 50000, 75000}; // Thresholds for each level
     private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
 
     private final Obstacle[] legendaryObstacles = {
@@ -59,11 +59,40 @@ public class ObstacleManager {
     private int uncommonProbability = 34; // Cake(+500), Emiya's blades, Ezreal, Croissant(+250), Fake_Cake(Kill)
     private int commonProbability = 50; // TNT, Steak(+50), Cactus, Bone, UFO, Hamburger(+100), Cross, Cookie(+10), Rotten_Flesh(-100)
 
+    private Timeline spawnObstacleTimeline;
+    private Duration spawnInterval = Duration.seconds(2); // Set the interval between obstacles
+
+    public void setSpawnInterval(Duration interval) {
+        this.spawnInterval = interval;
+        spawnObstacleTimeline.stop(); // Stop the current timeline
+        // Create a new timeline with the updated interval
+        spawnObstacleTimeline = new Timeline(
+                new KeyFrame(spawnInterval, event -> {
+                    if (!gameManager.getGameOverStatus() && !gameManager.getPauseStatus()) {
+                        startObstacleAnimation(createObstacle());
+                    }
+                })
+        );
+        spawnObstacleTimeline.setCycleCount(Timeline.INDEFINITE); // Repeat the spawn timeline indefinitely
+        spawnObstacleTimeline.play(); // Start the new spawn timeline
+    }
     public ObstacleManager(StackPane root, Shape collider, int screenWidth, int screenHeight) {
         this.ROOT = root;
         this.COLLIDER = collider;
         this.SCREEN_WIDTH = screenWidth;
         this.SCREEN_HEIGHT = screenHeight;
+
+        // Initialize the timeline for spawning obstacles
+        spawnObstacleTimeline = new Timeline(
+                new KeyFrame(spawnInterval, event -> {
+                    if (!gameManager.getGameOverStatus() && !gameManager.getPauseStatus()) {
+                        // Check if the game is not over or paused
+                        startObstacleAnimation(createObstacle());
+                    }
+                })
+        );
+        spawnObstacleTimeline.setCycleCount(Timeline.INDEFINITE); // Repeat the spawn timeline indefinitely
+        spawnObstacleTimeline.play(); // Start the spawn timeline
     }
 
     public void adjustProbabilities(int newCommon, int newUncommon, int newRare, int newSuperRare, int newLegendary) {
@@ -89,35 +118,35 @@ public class ObstacleManager {
             // random one of the common obstacle
             System.out.println(randomNumber + " Common");
             int randomCommon = random.nextInt(0, commonObstacles.length);
-            newObstacle = commonObstacles[randomCommon];
+            newObstacle = commonObstacles[randomCommon].cloneObstacle();
 
         } else if (randomNumber < commonProbability + uncommonProbability) {
 
             // random one of the uncommon obstacle
             System.out.println(randomNumber + " Uncommon");
             int randomUncommon = random.nextInt(0, uncommonObstacles.length);
-            newObstacle = uncommonObstacles[randomUncommon];
+            newObstacle = uncommonObstacles[randomUncommon].cloneObstacle();
 
         } else if (randomNumber < commonProbability + uncommonProbability + rareProbability) {
 
             // random one of the rare obstacle
             System.out.println(randomNumber + " Rare");
             int randomRare = random.nextInt(0, rareObstacles.length);
-            newObstacle = rareObstacles[randomRare];
+            newObstacle =rareObstacles[randomRare].cloneObstacle();
 
         } else if (randomNumber < commonProbability + uncommonProbability + rareProbability + superRareProbability) {
 
             // random one of the super rare obstacle
             System.out.println(randomNumber + " Super Rare");
             int randomSuperRare = random.nextInt(0, superRareObstacles.length);
-            newObstacle = superRareObstacles[randomSuperRare];
+            newObstacle = superRareObstacles[randomSuperRare].cloneObstacle();
 
         } else {
 
             // random one of the legendary obstacle
             System.out.println(randomNumber + " Legendary");
             int randomLegendary = random.nextInt(0, legendaryObstacles.length);
-            newObstacle = legendaryObstacles[randomLegendary];
+            newObstacle = legendaryObstacles[randomLegendary].cloneObstacle();
 
         }
 
@@ -145,48 +174,37 @@ public class ObstacleManager {
                     obstacleTexture.setTranslateX(obstacleTexture.getTranslateX() - obstacleSpeed); // Adjust speed as needed
 
                     // Check for collision with the Dino girl
-                    if (obstacleTexture.getBoundsInParent().intersects(COLLIDER.getBoundsInParent())) {
-                        String type = obstacle.getType();
-
-                        if (Objects.equals(type, "Score")) {
-                            currentScore += obstacle.getAdditionalScore();
-
-                            displayScoreMessage(obstacle.getAdditionalScore(), obstacleTexture.getTranslateX(), obstacleTexture.getTranslateY());
-                            timeline.stop();
-
-                            // Destroy obj and start new obj timeline
-                            ROOT.getChildren().remove(obstacleTexture);
-                            startObstacleAnimation(createObstacle());
-                        }
-
-                        if (Objects.equals(type, "Damage")) {
-                            // Handle Game Over
-                            timeline.stop(); // Stop the Game
-                            displayGameOver(obstacleTexture);
-                        }
-
-                        if (Objects.equals(type, "Trap")) {
-                            boolean once = false;
-                            if (!once) {
-                                soundManager.playSoundEffect(obstacle.soundPath);
-                                once = true;
-                            }
-                            obstacle.trapActivated(ROOT, obstacleTexture);
-                        }
+                    if (obstacleTexture.getBoundsInParent().intersects(COLLIDER.getBoundsInParent()) && !obstacle.isDisable()) {
+                        handleObstacleCollision(obstacle, obstacleTexture);
                     }
 
                     // Remove obstacle when off-screen
-                    if (obstacleTexture.getTranslateX()  < ((double) SCREEN_WIDTH / -2)) {
+                    if (obstacleTexture.getTranslateX() < ((double) SCREEN_WIDTH / -2)) {
                         ROOT.getChildren().remove(obstacleTexture);
-                        // System.out.println("Vanished!");
-                        timeline.stop();
-                        startObstacleAnimation(createObstacle());
                     }
                 })
         );
 
         timeline.setCycleCount(Timeline.INDEFINITE); // Repeat the animation indefinitely
         timeline.play();
+    }
+
+    private void handleObstacleCollision(Obstacle obstacle, ImageView currentObj) {
+        String type = obstacle.getType();
+
+        if (Objects.equals(type, "Score")) {
+            currentScore += obstacle.getAdditionalScore();
+            displayScoreMessage(obstacle.getAdditionalScore(), obstacle.getTexture().getTranslateX(), obstacle.getTexture().getTranslateY());
+            ROOT.getChildren().remove(currentObj);
+            obstacle.setDisable(true);
+        } else if (Objects.equals(type, "Damage")) {
+            // Handle Game Over
+            timeline.stop(); // Stop the Game
+            displayGameOver(obstacle.getTexture());
+        } else if (Objects.equals(type, "Trap")) {
+            soundManager.playSoundEffect(obstacle.soundPath);
+            obstacle.trapActivated(ROOT, obstacle.getTexture());
+        }
     }
 
     // Method to update the speed based on the score

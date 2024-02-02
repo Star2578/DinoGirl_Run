@@ -17,4 +17,9 @@ public class Cake extends Obstacle {
     public void isSpawned() {
         super.isSpawned();
     }
+
+    @Override
+    public Cake cloneObstacle() {
+        return new Cake(); // Call the superclass clone method
+    }
 }

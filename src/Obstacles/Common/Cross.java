@@ -12,4 +12,9 @@ public class Cross extends Obstacle {
         defaultGround -= 15;
         defaultAir = 40;
     }
+
+    @Override
+    public Cross cloneObstacle() {
+        return new Cross();
+    }
 }

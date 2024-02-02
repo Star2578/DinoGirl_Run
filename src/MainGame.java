@@ -28,7 +28,7 @@ public class MainGame {
     private boolean isJumping = false;
     private boolean isCrouching = false;
     private final double JUMP_STRENGTH = -15;
-    private final double MOVEMENT_SPEED = 10;
+    private final double MOVEMENT_SPEED = 5;
     private AnimationTimer gameLoop;
     private double groundPos;
     private boolean isMoveLeft = false;

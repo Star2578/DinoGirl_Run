@@ -11,4 +11,9 @@ public class Rotten_Flesh extends Obstacle {
         setTextureFromPath("Sprites/Obstacle_Sprites/Rotten_Flesh.png");
         setAdditionalScore(-100);
     }
+
+    @Override
+    public Rotten_Flesh cloneObstacle() {
+        return new Rotten_Flesh();
+    }
 }

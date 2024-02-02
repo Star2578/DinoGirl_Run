@@ -46,4 +46,8 @@ public class Sans extends Obstacle {
         missTextTimeline.play();
         Missed = true;
     }
+    @Override
+    public Sans cloneObstacle() {
+        return new Sans();
+    }
 }

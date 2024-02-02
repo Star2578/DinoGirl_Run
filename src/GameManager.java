@@ -390,7 +390,11 @@ public class GameManager {
         skinMenuRoot.getChildren().addAll(skinCards);
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> stage.setScene(previousScene));
+        backButton.getStyleClass().add("menu-button-2");
+        backButton.setOnAction(e -> {
+            stage.setScene(previousScene);
+            soundManager.playSoundEffect(soundManager.clickingSound);
+        });
 
         VBox skinMenuVBox = new VBox(skinMenuRoot, backButton);
         skinMenuVBox.setAlignment(Pos.CENTER);
@@ -449,15 +453,16 @@ public class GameManager {
         Label descriptionLabel = new Label(description);
 
         Button changeSkinButton = new Button("Change Skin");
+        changeSkinButton.getStyleClass().add("menu-button-2");
         changeSkinButton.setOnAction(e -> {
             // Implement skin changing logic here
             if (unlockedSkins[skinIndex]) {
                 setCurrentSkin(skinName);
                 saveGame();  // Save the current skin
                 System.out.println("Changing to " + skinName);
-            } else {
-                System.out.println("Skin locked: " + skinName);
             }
+
+            soundManager.playSoundEffect(soundManager.clickingSound);
         });
 
         skinInfo.getChildren().addAll(skinNameLabel, descriptionLabel);

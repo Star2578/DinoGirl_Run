@@ -16,4 +16,9 @@ public class Croissant extends Obstacle {
     public void isSpawned() {
         super.isSpawned();
     }
+
+    @Override
+    public Croissant cloneObstacle() {
+        return new Croissant(); // Call the superclass clone method
+    }
 }

@@ -16,4 +16,9 @@ public class GigaChad extends Obstacle {
     public void isSpawned() {
         spawnPoint = 72;
     }
+
+    @Override
+    public GigaChad cloneObstacle() {
+        return new GigaChad();
+    }
 }

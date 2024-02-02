@@ -3,9 +3,10 @@ package Obstacles;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
+import java.util.Objects;
 import java.util.Random;
 
-public class Obstacle {
+public abstract class Obstacle{
     protected String name;
     protected int height;
     protected int width;
@@ -16,6 +17,7 @@ public class Obstacle {
     protected double defaultGround = 150;
     protected double defaultAir = 50;
     public String soundPath;
+    private boolean isDisable = false;
 
     public Obstacle() {
 
@@ -26,6 +28,7 @@ public class Obstacle {
         this.texture = new ImageView(textTurePath);
     }
 
+    public abstract Obstacle cloneObstacle();
     public void setName(String name) { this.name = name; }
     public void setTexture(ImageView texture) { this.texture = texture; }
     public void setTextureFromPath(String texturePath) { this.texture = new ImageView(texturePath); }
@@ -50,6 +53,7 @@ public class Obstacle {
     public int getAdditionalScore() { return additionalScore; }
     public double getDefaultAir() { return defaultAir; }
     public double getDefaultGround() { return defaultGround; }
+    public void setDisable(boolean disable) { isDisable = disable; }
 
     public void isSpawned() {
         // will called when this obstacle spawn
@@ -64,5 +68,9 @@ public class Obstacle {
 
     public void trapActivated(StackPane root, ImageView obstacle) {
         // will called when this obstacle got hit
+    }
+
+    public boolean isDisable() {
+        return isDisable;
     }
 }

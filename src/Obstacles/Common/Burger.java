@@ -16,4 +16,9 @@ public class Burger extends Obstacle {
     public void isSpawned() {
         super.isSpawned();
     }
+
+    @Override
+    public Burger cloneObstacle() {
+        return new Burger();
+    }
 }

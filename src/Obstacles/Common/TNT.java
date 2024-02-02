@@ -15,4 +15,9 @@ public class TNT extends Obstacle {
     public void isSpawned() {
         spawnPoint = defaultGround;
     }
+
+    @Override
+    public TNT cloneObstacle() {
+        return new TNT();
+    }
 }

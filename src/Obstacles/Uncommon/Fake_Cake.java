@@ -11,4 +11,9 @@ public class Fake_Cake extends Obstacle {
         setTextureFromPath("Sprites/Obstacle_Sprites/Fake_Cake.png");
         setDefaultGround(140);
     }
+
+    @Override
+    public Fake_Cake cloneObstacle() {
+        return new Fake_Cake(); // Call the superclass clone method
+    }
 }

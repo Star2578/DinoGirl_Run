@@ -11,4 +11,9 @@ public class Bone extends Obstacle {
         setTextureFromPath("Sprites/Obstacle_Sprites/Bone.png");
         defaultGround = 50;
     }
+
+    @Override
+    public Bone cloneObstacle() {
+        return new Bone();
+    }
 }

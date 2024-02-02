@@ -16,4 +16,9 @@ public class Steak extends Obstacle {
     public void isSpawned() {
         super.isSpawned();
     }
+
+    @Override
+    public Steak cloneObstacle() {
+        return new Steak();
+    }
 }

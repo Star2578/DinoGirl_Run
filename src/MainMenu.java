@@ -35,6 +35,8 @@ public class MainMenu extends Application {
         soundManager.playBackgroundMusic(soundManager.backgroundMusicPath);
 
         StackPane root = new StackPane();
+        root.setStyle("-fx-background-color: #32a852;");
+
         // Components that would be in the scene
         Text version = new Text("v" + gameManager.version);
         VBox versionContainer = new VBox(version);
