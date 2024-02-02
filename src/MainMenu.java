@@ -51,7 +51,7 @@ public class MainMenu extends Application {
         titleContainer.setPadding(new Insets(20));
 
         VBox highScoreContainer = new VBox();
-        Text highScore = new Text("High Score: " + gameManager.getHighScore());
+        Text highScore = new Text("High Score: " + gameManager.highScore);
         highScore.getStyleClass().add("high-score-text");
         highScoreContainer.getChildren().add(highScore);
         highScoreContainer.setAlignment(Pos.TOP_RIGHT);

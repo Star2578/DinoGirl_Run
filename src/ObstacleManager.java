@@ -23,14 +23,18 @@ import java.util.Random;
 public class ObstacleManager {
     GameManager gameManager = GameManager.getInstance();
     SoundManager soundManager = SoundManager.getInstance();
-    private final StackPane ROOT;
-    private final Shape COLLIDER;
+
     private final int SCREEN_WIDTH;
     private final int SCREEN_HEIGHT;
+
     private Timeline timeline;
     private double obstacleSpeed = 5.0; // Initial obstacle speed
+
+    private final StackPane ROOT;
+    private final Shape COLLIDER;
     private final int[] THRESHOLDS = {0, 100, 500, 1000, 5000, 10000}; // Thresholds for each level
     private final double[] SPEED_MULTIPLIER = {0, 1.5, 2.0, 2.5, 3.0, 4.0}; // Corresponding speed multipliers
+
     private final Obstacle[] legendaryObstacles = {
             new GigaChad()
     };
@@ -63,15 +67,15 @@ public class ObstacleManager {
     }
 
     public void adjustProbabilities(int newCommon, int newUncommon, int newRare, int newSuperRare, int newLegendary) {
+        if (newCommon + newUncommon + newRare + newSuperRare + newLegendary > 100) {
+            System.out.println("ERROR: Probability exceeded 100!!!");
+            return;
+        }
         commonProbability = newCommon;
         uncommonProbability = newUncommon;
         rareProbability = newRare;
         superRareProbability = newSuperRare;
         legendaryProbability = newLegendary;
-
-        if (commonProbability + uncommonProbability + rareProbability + superRareProbability + legendaryProbability > 100) {
-            System.out.println("ERROR, Probability exceeded 100!!!");
-        }
     }
 
     public Obstacle createObstacle() {
@@ -205,9 +209,9 @@ public class ObstacleManager {
     }
 
     public void displayGameOver(ImageView deleteMe) {
-        if (currentScore > gameManager.getHighScore())
-            gameManager.setHighScore(currentScore);
-        gameManager.setDeathCount(gameManager.getDeathCount() + 1);
+        if (currentScore > gameManager.highScore)
+            gameManager.highScore = currentScore;
+        gameManager.deathCount += 1;
         gameManager.saveGame();
 
         Random random = new Random();
@@ -217,7 +221,7 @@ public class ObstacleManager {
         Text gameOverText = new Text("Game Over!");
         gameOverText.setStyle("-fx-font-size: 80;");
 
-        Text deathCountText = new Text("\uD83D\uDC80 " + gameManager.getDeathCount());
+        Text deathCountText = new Text("\uD83D\uDC80 " + gameManager.deathCount);
         deathCountText.setStyle("-fx-font-size: 40;");
 
         Text scoreText = new Text("Your Score is " + currentScore);

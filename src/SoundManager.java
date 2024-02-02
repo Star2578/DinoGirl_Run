@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class SoundManager {
     private static SoundManager instance;
-    private GameManager gameManager = GameManager.getInstance();
+    private final GameManager gameManager = GameManager.getInstance();
     private AudioInputStream audioInputStream;
     private Clip backgroundMusic;
     private Thread backgroundMusicThread;

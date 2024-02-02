@@ -26,8 +26,9 @@ public class GameManager {
 
     private static GameManager instance;
     private SoundManager soundManager;
-    private Properties settingProperties;
-    private Properties gameProperties;
+    private AchievementManager achievementManager;
+    private final Properties settingProperties;
+    private final Properties gameProperties;
 
     private int screenWidth;
     private int screenHeight;
@@ -39,9 +40,6 @@ public class GameManager {
     private float soundEffectSlider = 50.0f;
     private float backgroundMusicVolume = MID_DECIBEL;
     private float backgroundMusicSlider = 50.0f;
-
-    private int highScore = 0;
-    private int deathCount = 0;
 
     public String version = "1.1";
 
@@ -57,7 +55,20 @@ public class GameManager {
     public boolean dino_space = false;
     public boolean dino_spartan = false;
     private boolean[] unlockedSkins;
-    // Achievements
+
+    // Progression
+    public int highScore = 0; // Better than last time, Beyond Limit
+    public int deathCount = 0; // Ouch!, Raging Gamer, Immortal
+    public int playCount = 0; // Having fun!, Wasting Time, Please do something more productive
+    public int eatCount = 0; // Delicious, Fat *** Dino
+    public int meatEatenCount = 0; // Too much meat will hurt your stomach
+    public int chadCount = 0; // Giga Dino, Brud is so lucky
+    public int davidCount = 0; // -2077, I really want to stay at your house...
+    public int sansCount = 0; // Where's tomato sauce?, Always missed
+    public int shieldCount = 0; // The shield always broken, This is SPARTAN!
+    public int sunClicked = 0; // Clicking Simulator?, Teletubbie fans, Autism
+    public int jumpCount = 0; // Wannabe Ninja, Broken Space bar
+    public int winCount = 0; // Yay!, But at what cost?, True Gamer
 
     public GameManager() {
         // default values
@@ -80,6 +91,9 @@ public class GameManager {
 
     public void initialize(SoundManager soundManager) {
         this.soundManager = soundManager;
+    }
+    public void initialize(AchievementManager achievementManager) {
+        this.achievementManager = achievementManager;
     }
 
     public int getScreenWidth() {
@@ -107,9 +121,6 @@ public class GameManager {
     public Scene getMainMenuScene() { return mainMenuScene; }
     public void setMainMenuScene(Scene mainMenuScene) { this.mainMenuScene = mainMenuScene; }
 
-    public int getHighScore() { return highScore; }
-    public void setHighScore(int highScore) { this.highScore = highScore; }
-
     public float getBackgroundMusicVolume() { return backgroundMusicVolume; }
     public void setBackgroundMusicVolume(float backgroundMusicVolume) { this.backgroundMusicVolume = backgroundMusicVolume; }
 
@@ -122,11 +133,10 @@ public class GameManager {
     public float getSoundEffectSlider() { return soundEffectSlider; }
     public void setSoundEffectSlider(float soundEffectSlider) { this.soundEffectSlider = soundEffectSlider; }
 
-    public int getDeathCount() { return deathCount; }
-    public void setDeathCount(int deathCount) { this.deathCount = deathCount; }
-
     // Mapping function to convert slider values to decibel range
     private float mapToDecibelRange(float sliderValue) {
+        if (sliderValue == 0) return -80;
+
         // Assuming the slider value ranges from 0 to 100
         float normalizedValue = sliderValue / 100.0f;
 
@@ -238,7 +248,7 @@ public class GameManager {
 
     private void loadSettings() {
         // Implement loading settings from file
-        try (InputStream input = new FileInputStream("config.properties")) {
+        try (InputStream input = new FileInputStream(CONFIG_FILE_PATH)) {
             settingProperties.load(input);
 
             // Load settings from properties
@@ -256,7 +266,7 @@ public class GameManager {
     }
     private void saveSettings() {
         // Implement saving settings to file
-        try (OutputStream output = new FileOutputStream("config.properties")) {
+        try (OutputStream output = new FileOutputStream(CONFIG_FILE_PATH)) {
             // Save settings to properties
             settingProperties.setProperty("screenWidth", String.valueOf(getScreenWidth()));
             settingProperties.setProperty("screenHeight", String.valueOf(getScreenHeight()));
@@ -275,10 +285,22 @@ public class GameManager {
 
     public void saveGame() {
         // save the game progression
-        try (OutputStream output = new FileOutputStream("config.progression")) {
-            // Save settings to properties
+        try (OutputStream output = new FileOutputStream(PROGRESSION_FILE_PATH)) {
+            // Progression
             gameProperties.setProperty("HighScore", String.valueOf(highScore));
             gameProperties.setProperty("DeathCount", String.valueOf(deathCount));
+            gameProperties.setProperty("PlayCount", String.valueOf(playCount));
+            gameProperties.setProperty("EatCount", String.valueOf(eatCount));
+            gameProperties.setProperty("MeatEatenCount", String.valueOf(meatEatenCount));
+            gameProperties.setProperty("ChadCount", String.valueOf(chadCount));
+            gameProperties.setProperty("DavidCount", String.valueOf(davidCount));
+            gameProperties.setProperty("SansCount", String.valueOf(sansCount));
+            gameProperties.setProperty("ShieldCount", String.valueOf(shieldCount));
+            gameProperties.setProperty("SunClicked", String.valueOf(sunClicked));
+            gameProperties.setProperty("JumpCount", String.valueOf(jumpCount));
+            gameProperties.setProperty("WinCount", String.valueOf(winCount));
+
+            // Skin
             gameProperties.setProperty("Skin_Dino_Cool", String.valueOf(dino_cool));
             gameProperties.setProperty("Skin_Dino_Deer_Eat_Meat", String.valueOf(dino_deer_eat_meat));
             gameProperties.setProperty("Skin_Dino_Emiya", String.valueOf(dino_emiya));
@@ -298,12 +320,22 @@ public class GameManager {
 
     public void loadGame() {
         // load the game progression
-        try (InputStream input = new FileInputStream("config.progression")) {
+        try (InputStream input = new FileInputStream(PROGRESSION_FILE_PATH)) {
             gameProperties.load(input);
 
-            // Load settings from properties
-            setHighScore(Integer.parseInt(gameProperties.getProperty("HighScore", "0")));
-            setDeathCount(Integer.parseInt(gameProperties.getProperty("DeathCount", "0")));
+            // Load progression from properties
+            highScore = Integer.parseInt(gameProperties.getProperty("HighScore", "0"));
+            deathCount = Integer.parseInt(gameProperties.getProperty("DeathCount", "0"));
+            playCount = Integer.parseInt(gameProperties.getProperty("PlayCount", "0"));
+            eatCount = Integer.parseInt(gameProperties.getProperty("EatCount", "0"));
+            meatEatenCount = Integer.parseInt(gameProperties.getProperty("MeatEatenCount", "0"));
+            chadCount = Integer.parseInt(gameProperties.getProperty("ChadCount", "0"));
+            davidCount = Integer.parseInt(gameProperties.getProperty("DavidCount", "0"));
+            sansCount = Integer.parseInt(gameProperties.getProperty("SansCount", "0"));
+            shieldCount = Integer.parseInt(gameProperties.getProperty("ShieldCount", "0"));
+            sunClicked = Integer.parseInt(gameProperties.getProperty("SunClicked", "0"));
+            jumpCount = Integer.parseInt(gameProperties.getProperty("JumpCount", "0"));
+            winCount = Integer.parseInt(gameProperties.getProperty("WinCount", "0"));
 
             dino_cool = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Cool", "false"));
             dino_deer_eat_meat = Boolean.parseBoolean(gameProperties.getProperty("Skin_Dino_Deer_Eat_Meat", "false"));
@@ -420,7 +452,7 @@ public class GameManager {
         changeSkinButton.setOnAction(e -> {
             // Implement skin changing logic here
             if (unlockedSkins[skinIndex]) {
-                setCurrentSkin(skinIndex);
+                setCurrentSkin(skinName);
                 saveGame();  // Save the current skin
                 System.out.println("Changing to " + skinName);
             } else {
@@ -434,8 +466,8 @@ public class GameManager {
         return skinCard;
     }
 
-    private void setCurrentSkin(int skinIndex) {
+    private void setCurrentSkin(String skinPath) {
         // Assuming skin paths follow a specific pattern
-        currentSkin = "Sprites/Player/Dino_" + (skinIndex + 1) + ".png";
+        currentSkin = "Sprites/Player/Dino_" + skinPath + ".png";
     }
 }
